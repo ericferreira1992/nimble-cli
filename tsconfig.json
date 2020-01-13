@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "target": "es5",
+        "sourceMap": true,
+        "inlineSources": true,
+        "module": "commonjs",
+        "lib": [
+            "es6",
+            "es2015",
+            "dom",
+            "esnext.asynciterable"
+        ],
+        "declaration": false,
+        "experimentalDecorators": true,
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "strict": true,
+        "types": [
+            "node",
+            "inquirer",
+            "figlet",
+            "fs-extra"
+        ],
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "importHelpers": true,
+        "stripInternal": true
+    },
+    "include": [
+        "src"
+    ]
+}

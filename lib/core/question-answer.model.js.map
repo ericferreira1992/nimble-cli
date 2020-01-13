@@ -1,0 +1,1 @@
+{"version":3,"file":"question-answer.model.js","sourceRoot":"","sources":["../../src/core/question-answer.model.ts"],"names":[],"mappings":"","sourcesContent":["export interface QuestionAnswer {\n    value: string;\n}"]}
