@@ -15,7 +15,7 @@ const distPath = path.resolve(process.cwd(), 'dist');
 
 export function webpackConfig(env: string, isProdMod: boolean = false) {
     let enviroment = loadEnvFile(env);
-    return {
+    let config = {
         mode: isProdMod ? 'production' : 'development',
         entry: getEntries(),
         output: {
@@ -49,6 +49,11 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
             })(),
         }
     };
+
+    if (!isProdMod)
+        config['devtool'] = 'source-map';
+
+    return config;
 };
 
 function getEntries() {
@@ -58,11 +63,11 @@ function getEntries() {
     if (configuration.vendors) {
         if (configuration.vendors.js && configuration.vendors.js.length > 0)
             entry['js-vendors'] = configuration.vendors.js.map((file: string) => {
-                return process.cwd() + file;
+                return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
             });
         if (configuration.vendors.css && configuration.vendors.css.length > 0)
             entry['css-vendors'] = configuration.vendors.css.map((file: string) => {
-                return process.cwd() + file;
+                return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
             });
     }
     return entry;
