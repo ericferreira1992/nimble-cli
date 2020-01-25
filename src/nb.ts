@@ -9,6 +9,7 @@ import { New } from './options/new/new';
 import { Generate } from './options/generate/generate';
 import { Readable } from 'stream';
 import { Serve } from './commands/serve/serve';
+import { Build } from './commands/build/build';
 
 @injectable()
 export class NB {
@@ -47,7 +48,8 @@ export class NB {
             return CLI.inject<Serve>('Serve').execute(this.args);
             // return this.runServe();
         if (arg === 'build' || arg === 'b')
-            return this.runBuild();
+            return CLI.inject<Build>('Build').execute(this.args);
+            // return this.runBuild();
     }
 
     private async execute() {
@@ -71,7 +73,7 @@ export class NB {
         }
     }
 
-    private async runServe() {
+    /* private async runServe() {
         let nexts = this.args.slice(1);
         let env = this.getArgValueIfExists(nexts, '--env');
         let childProcess = cp.exec(`webpack-dev-server --env=${env ? env : 'local'} --devtool source-map --colors`);
@@ -93,7 +95,7 @@ export class NB {
         (childProcess.stderr as Readable).on('data', (data) => {
             console.log(data);
         });
-    }
+    } */
 
     private getArgValueIfExists(args: string[], name: string): string | boolean {
         for(let arg of args) {
