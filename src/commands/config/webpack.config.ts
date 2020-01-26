@@ -11,7 +11,7 @@ catch{ configuration = {}; }
 
 const Renderer = PrerenderSpaPlugin.PuppeteerRenderer;
 
-const distPath = path.resolve(process.cwd(), 'dist');
+const distPath = path.resolve(process.cwd(), 'build');
 
 export function webpackConfig(env: string, isProdMod: boolean = false) {
     let enviroment = loadEnvFile(env);
@@ -25,14 +25,14 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
             publicPath: '/'
         },
         watch: !isProdMod,
-        watchOptions: { ignored: [ `${process.cwd()}/node_modules` ] },
+        watchOptions: { ignored: [`${process.cwd()}/node_modules`] },
         plugins: getPlugins(isProdMod, enviroment),
         module: {
             rules: getRules(isProdMod, enviroment)
         },
         resolve: {
             extensions: [".tsx", ".ts", ".js"],
-            alias: (function() {
+            alias: (function () {
                 const tsconfigPath = process.cwd() + '/tsconfig.json';
                 const { baseUrl, paths } = require(tsconfigPath).compilerOptions;
                 const pathPrefix = path.resolve(path.dirname(tsconfigPath), baseUrl);
@@ -57,16 +57,16 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
 };
 
 function getEntries() {
-    
+
     let entry = { 'main': process.cwd() + '/src/index.ts' } as any;
-    
+
     if (configuration.vendors) {
         if (configuration.vendors.js && configuration.vendors.js.length > 0)
-            entry['js-vendors'] = configuration.vendors.js.map((file: string) => {
+            entry['js.vendors'] = configuration.vendors.js.map((file: string) => {
                 return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
             });
         if (configuration.vendors.css && configuration.vendors.css.length > 0)
-            entry['css-vendors'] = configuration.vendors.css.map((file: string) => {
+            entry['css.vendors'] = configuration.vendors.css.map((file: string) => {
                 return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
             });
     }
@@ -79,7 +79,8 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
         new HtmlWebpackPlugin({
             template: process.cwd() + '/public/index.html',
             filename: 'index.html',
-            hash: true
+            hash: true,
+            minify: isProdMod
         }),
         new CopyPlugin([
             { from: 'public', to: '.' },
@@ -88,7 +89,7 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
             'process.env': JSON.stringify(enviroment)
         })
     ];
-    
+
     let preRender = configuration['pre-render'];
     if (isProdMod && preRender && preRender.enabled && preRender.routes && preRender.routes.length > 0) {
         plugins.push(new PrerenderSpaPlugin({
@@ -131,7 +132,7 @@ function getRules(isProdMod: boolean, enviroment: any) {
             test: /\.(svg|png|jpg)$/,
             loader: 'file-loader',
             options: {
-                name:'[name].[ext]',
+                name: '[name].[ext]',
                 outputhPath: 'assets/img/',
                 publicPath: 'assets/img/'
             }
@@ -140,7 +141,7 @@ function getRules(isProdMod: boolean, enviroment: any) {
             test: /\.(ttf|woff|woff2)$/,
             loader: 'file-loader',
             options: {
-                name:'[name].[ext]',
+                name: '[name].[ext]',
                 outputhPath: 'assets/fonts/',
                 publicPath: 'assets/fonts/'
             }

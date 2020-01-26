@@ -10,7 +10,7 @@ const Renderer = PrerenderSpaPlugin.PuppeteerRenderer;
 const ts = require('typescript');
 const configuration = require('./src/configuration.json');
 
-const distPath = path.resolve(__dirname, 'dist');
+const distPath = path.resolve(__dirname, 'build');
 
 module.exports = (env) => {
     let enviroment = loadEnvFile(env);
