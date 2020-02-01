@@ -7,7 +7,7 @@ import { Logger } from '../../utils/logger.util';
 import { FileCreator } from '../../core/file-creator/file-creator';
 
 import { INDEX_HTML } from './templates/public-directory';
-import { GITIGNORE, PACKAGE_JSON, README, TSCONFIG, WEBPACK_CONFIG } from './templates/project-directory';
+import { GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
 import { CONFIGURATION_JSON, STYLE_SCSS, INDEX_TS } from './templates/src-directory';
 import { RESET_SCSS, VARIABLES_SCSS } from './templates/scss-directory';
@@ -158,8 +158,7 @@ export class New {
                     { name: '.gitignore', content: this.replaceVariablesInContentFile(GITIGNORE) },
                     { name: 'package.json', content: this.replaceVariablesInContentFile(PACKAGE_JSON) },
                     { name: 'README.md', content: this.replaceVariablesInContentFile(README) },
-                    { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) },
-                    // { name: 'webpack.config.js', content: this.replaceVariablesInContentFile(WEBPACK_CONFIG) }
+                    { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) }
                 ]
             }
         ]);

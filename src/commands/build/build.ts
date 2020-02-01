@@ -47,29 +47,16 @@ export class Build {
                     } else {
                         console.log(chalk.green('Compiled successfully.\n'));
                     }
-
-                    console.log('File sizes after gzip:\n');
-                    /* printFileSizesAfterBuild(
-                        stats,
-                        PATHS.appBuild,
-                        this.WARN_AFTER_BUNDLE_GZIP_SIZE,
-                        this.WARN_AFTER_CHUNK_GZIP_SIZE
-                    );
-                    console.log(); */
-
-                    /* const appPackage = require(PATHS.appPackageJson);
-                    const publicUrl = PATHS.appPublic;
-                    const publicPath = config.output.publicPath;
-                    const buildFolder = path.relative(process.cwd(), PATHS.appBuild);
-                    printHostingInstructions(
-                        appPackage,
-                        publicUrl,
-                        publicPath,
-                        buildFolder
-                    ); */
                 },
                 err => {
+                    if (err && err.message) {
+                        console.log('');
+                        console.log(err.message);
+                        console.log('');
+                    }
+
                     const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
+                    
                     if (tscCompileOnError) {
                         console.log(
                             chalk.yellow(
@@ -83,13 +70,7 @@ export class Build {
                         process.exit(1);
                     }
                 }
-            )
-            .catch(err => {
-                if (err && err.message) {
-                    console.log(err.message);
-                }
-                process.exit(1);
-            });;
+            );
     }
 
     private build(config: any) {

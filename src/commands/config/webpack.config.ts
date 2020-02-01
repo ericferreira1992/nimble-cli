@@ -80,7 +80,18 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
             template: process.cwd() + '/public/index.html',
             filename: 'index.html',
             hash: true,
-            minify: isProdMod
+            minify: isProdMod ? {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true,
+              } : undefined
         }),
         new CopyPlugin([
             { from: 'public', to: '.' },
