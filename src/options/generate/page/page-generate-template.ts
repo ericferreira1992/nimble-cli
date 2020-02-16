@@ -15,7 +15,7 @@ export const PAGE_TS =
     style: require('./[[Name]].page.scss'),
     title: '[[FriendlyName]]'
 })
-export default class [[FriendlyName]]Page extends Page {
+export class [[FriendlyName]]Page extends Page {
 
     constructor() {
         super();

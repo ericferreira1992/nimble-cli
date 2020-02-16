@@ -4,6 +4,7 @@ import CleanWebpackPlugin from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import PrerenderSpaPlugin from 'prerender-spa-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 let configuration: any = {};
 try { configuration = require(process.cwd() + '/src/configuration.json'); }
@@ -19,8 +20,8 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
         mode: isProdMod ? 'production' : 'development',
         entry: getEntries(),
         output: {
-            chunkFilename: '[name].[chunkhash].bundle.js',
-            filename: '[name].[chunkhash].bundle.js',
+            chunkFilename: '[name].bundle.[chunkhash].js',
+            filename: '[name].bundle.[chunkhash].js',
             path: distPath,
             publicPath: '/'
         },
@@ -31,16 +32,16 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
             rules: getRules(isProdMod, enviroment)
         },
         resolve: {
-            extensions: [".tsx", ".ts", ".js"],
-            alias: (function () {
+            extensions: ['.tsx', '.ts', '.js', '.scss'],
+            alias: (() => {
                 const tsconfigPath = process.cwd() + '/tsconfig.json';
                 const { baseUrl, paths } = require(tsconfigPath).compilerOptions;
                 const pathPrefix = path.resolve(path.dirname(tsconfigPath), baseUrl);
                 const aliases = {} as any;
 
                 Object.keys(paths).forEach((item) => {
-                    const name = item.replace("/*", "");
-                    const value = path.resolve(pathPrefix, paths[item][0].replace("/*", ""));
+                    const name = item.replace('/*', '');
+                    const value = path.resolve(pathPrefix, paths[item][0].replace('/*', ''));
 
                     aliases[name] = value;
                 });
@@ -91,11 +92,15 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
                 minifyJS: true,
                 minifyCSS: true,
                 minifyURLs: true,
-              } : undefined
+            } : undefined
         }),
         new CopyPlugin([
             { from: 'public', to: '.' },
         ]),
+        new MiniCssExtractPlugin({
+            filename: !isProdMod ? '[name].css' : '[name].bundle.[hash].css',
+            chunkFilename: !isProdMod ? '[id].css' : '[id].bundle.[hash].css'
+        }),
         new webpack.DefinePlugin({
             'process.env': JSON.stringify(enviroment)
         })
@@ -109,7 +114,7 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
             renderer: new Renderer({
                 renderAfterDocumentEvent: 'render-event'
             }),
-            postProcess: function (renderedRoute: any) {
+            postProcess: (renderedRoute: any) => {
                 renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
                 renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
                 return renderedRoute;
@@ -128,17 +133,23 @@ function getRules(isProdMod: boolean, enviroment: any) {
             loader: 'ts-loader'
         },
         {
-            test: /\.css$/,
-            use: ['style-loader', 'css-loader']
-        },
-        {
-            test: /\.scss$/,
-            use: [
-                'style-loader',
+            test: /\.s(a|c)ss$/,
+            exclude: /\.module.(s(a|c)ss)$/,
+            loader: [
+                !isProdMod ? 'style-loader' : MiniCssExtractPlugin.loader,
                 'css-loader',
-                'sass-loader',
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: !isProdMod
+                    }
+                }
             ]
         },
+        // {
+        //     test: /\.css$/,
+        //     use: ['style-loader', 'css-loader']
+        // },
         {
             test: /\.(svg|png|jpg)$/,
             loader: 'file-loader',

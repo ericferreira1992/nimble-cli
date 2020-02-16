@@ -1,6 +1,6 @@
 {
     "name": "@nimble-ts/cli",
-    "version": "1.1.4",
+    "version": "1.1.5",
     "description": "The CLI tool for Nimble framework",
     "author": "Eric Ferreira",
     "repository": "https://github.com/ericferreira1992/nimble-cli",
@@ -47,6 +47,7 @@
         "inversify": "^5.0.1",
         "is-root": "^2.1.0",
         "kleur": "^3.0.3",
+        "mini-css-extract-plugin": "^0.9.0",
         "node-sass": "^4.11.0",
         "postcss-loader": "^3.0.0",
         "prerender-spa-plugin": "^3.4.0",

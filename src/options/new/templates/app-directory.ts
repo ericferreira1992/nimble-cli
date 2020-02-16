@@ -4,16 +4,16 @@ export const ROUTES_TS =
 export const ROUTES: RouteBase[] = [
     {
         path: '',
-        page: () => import('./pages/root/root.page'),
+        page: () => import('./pages/root/root.page').then(x => x.RootPage),
         children: [
             {
                 isPriority: true,
                 path: 'first',
-                page: () => import('./pages/first/first.page')
+                page: () => import('./pages/first/first.page').then(x => x.FirstPage)
             },
             {
                 path: 'second',
-                page: () => import('./pages/second/second.page')
+                page: () => import('./pages/second/second.page').then(x => x.SecondPage)
             }   
         ]
     }

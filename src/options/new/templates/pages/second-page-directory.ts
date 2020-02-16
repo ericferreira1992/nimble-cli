@@ -22,6 +22,6 @@ export const SECOND_TS =
     style: require('./second.page.scss'),
     title: 'Nimble - First Page'
 })
-export default class SecondPage extends Page {
+export class SecondPage extends Page {
 
 }`;

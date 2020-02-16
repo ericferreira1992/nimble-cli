@@ -77,6 +77,6 @@ export const ROOT_TS =
     template: require('./root.page.html'),
     style: require('./root.page.scss')
 })
-export default class RootPage extends Page {
+export class RootPage extends Page {
     public get routePath() { return Router.currentPath; }
 }`;
