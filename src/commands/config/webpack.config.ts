@@ -32,7 +32,7 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
             rules: getRules(isProdMod, enviroment)
         },
         resolve: {
-            extensions: ['.tsx', '.ts', '.js', '.scss'],
+            extensions: ['.ts', '.js', '.scss'],
             alias: (() => {
                 const tsconfigPath = process.cwd() + '/tsconfig.json';
                 const { baseUrl, paths } = require(tsconfigPath).compilerOptions;
@@ -108,9 +108,10 @@ function getPlugins(isProdMod: boolean, enviroment: any) {
 
     let preRender = configuration['pre-render'];
     if (isProdMod && preRender && preRender.enabled && preRender.routes && preRender.routes.length > 0) {
+        let routes = (preRender.routes as string[]).map(x => !x.startsWith('/') ? `/${x}` : x);
         plugins.push(new PrerenderSpaPlugin({
             staticDir: distPath,
-            routes: preRender.routes,
+            routes: routes,
             renderer: new Renderer({
                 renderAfterDocumentEvent: 'render-event'
             }),
@@ -133,7 +134,7 @@ function getRules(isProdMod: boolean, enviroment: any) {
             loader: 'ts-loader'
         },
         {
-            test: /\.s(a|c)ss$/,
+            test: /\.(sc|sa|c)ss$/,
             exclude: /\.module.(s(a|c)ss)$/,
             loader: [
                 !isProdMod ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -146,10 +147,6 @@ function getRules(isProdMod: boolean, enviroment: any) {
                 }
             ]
         },
-        // {
-        //     test: /\.css$/,
-        //     use: ['style-loader', 'css-loader']
-        // },
         {
             test: /\.(svg|png|jpg)$/,
             loader: 'file-loader',

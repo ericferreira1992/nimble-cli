@@ -3,12 +3,12 @@ export const PACKAGE_JSON =
     "name": "[[ProjectName]]",
     "version": "1.0.0",
     "scripts": {
-        "start": "ng serve",
-        "build": "ng build",
-        "serve:local": "ng serve --env=local",
-        "serve:dev": "ng serve --env=dev",
-        "build:prod": "ng build --env=prod",
-        "build:dev": "ng build --env=dev"
+        "start": "nb serve",
+        "build": "nb build",
+        "serve:local": "nb serve --env=local",
+        "serve:dev": "nb serve --env=dev",
+        "build:prod": "nb build --env=prod",
+        "build:dev": "nb build --env=dev"
     },
     "private": true,
     "dependencies": {

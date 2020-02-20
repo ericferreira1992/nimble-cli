@@ -1,6 +1,6 @@
 {
     "name": "@nimble-ts/cli",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "The CLI tool for Nimble framework",
     "author": "Eric Ferreira",
     "repository": "https://github.com/ericferreira1992/nimble-cli",
@@ -57,8 +57,8 @@
         "style-loader": "^0.23.1",
         "ts-loader": "^6.2.1",
         "tslib": "^1.10.0",
-        "webpack": "^4.28.1",
-        "webpack-dev-server": "^3.1.14"
+        "webpack": "^4.41.6",
+        "webpack-dev-server": "^3.10.3"
     },
     "devDependencies": {
         "@liftr/tscov": "^1.4.3",
