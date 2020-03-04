@@ -6,6 +6,8 @@ import { Logger } from '../../utils/logger.util';
 import { GenerateTypes } from './generate-types.enum';
 import { PageGenerate } from './page/page-generate';
 import { ServiceGenerate } from './service/service-generate';
+import { DialogGenerate } from './dialog/dialog-generate';
+import { DirectiveGenerate } from './directive/directive-generate';
 
 @injectable()
 export class Generate {
@@ -26,6 +28,12 @@ export class Generate {
         switch(answer.value) {
             case GenerateTypes.PAGE:
                 await CLI.inject<PageGenerate>('PageGenerate');
+                break;
+            case GenerateTypes.DIALOG:
+                await CLI.inject<DialogGenerate>('DialogGenerate');
+                break;
+            case GenerateTypes.DIRECTIVE:
+                await CLI.inject<DirectiveGenerate>('DirectiveGenerate');
                 break;
             case GenerateTypes.SERVICE:
                 await CLI.inject<ServiceGenerate>('ServiceGenerate');

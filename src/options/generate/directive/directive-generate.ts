@@ -27,7 +27,7 @@ export class DirectiveGenerate extends BaseGenerate {
             if (this.name.endsWith('/'))
                 this.name = this.name.substr(0, this.name.length - 1);
 
-            await this.startCreateSerivce();
+            await this.startCreateDirective();
         }
         else
             await this.execute();
@@ -37,7 +37,7 @@ export class DirectiveGenerate extends BaseGenerate {
         return inquirer.prompt([{ 
             name: 'value',
             type: 'input',
-            message: 'What is path and name? (ex.: services/auth)',
+            message: 'What is path and name? (ex.: directives/tooltip)',
         }]);
     };
 
@@ -58,7 +58,7 @@ export class DirectiveGenerate extends BaseGenerate {
         return true;
     }
 
-    private async startCreateSerivce() {
+    private async startCreateDirective() {
         let creator = new FileCreator();
         let { fileInstructions, lastDirectory } = this.getBaseFileInstructions();
 
@@ -85,22 +85,7 @@ export class DirectiveGenerate extends BaseGenerate {
         });
     }
 
-    private replaceVariablesInContentFile(content: string) {
-        let regex = /\[\[(.|\n)*?\]\]/g;
-        if (regex.test(content)) {
-            content = content.replace(regex, (name) => {
-                name = name.replace(/(^\[\[)|(\]\]$)/g, '');
-                if (name !== '')
-                    return this.getValueByName(name);
-
-                return '';
-            });
-        }
-
-        return content;
-    }
-
-    private getValueByName(name: string){
+    public getValueByName(name: string){
         switch(name) {
             case 'Name':
                 return this.fileName;

@@ -3,11 +3,11 @@ import inquirer = require('inquirer');
 import { QuestionAnswer } from '../../../core/question-answer.model';
 import { Logger } from '../../../utils/logger.util';
 import { FileCreator } from '../../../core/file-creator/file-creator';
-import { SERVICE_TS } from './service-generate-template';
+import { DIALOG_HTML, DIALOG_SCSS, DIALOG_TS } from './dialog-generate-template';
 import { BaseGenerate } from '../base-generate';
 
 @injectable()
-export class ServiceGenerate extends BaseGenerate {
+export class DialogGenerate extends BaseGenerate {
 
     constructor(
         @inject('Logger') private logger: Logger
@@ -27,7 +27,7 @@ export class ServiceGenerate extends BaseGenerate {
             if (this.name.endsWith('/'))
                 this.name = this.name.substr(0, this.name.length - 1);
 
-            await this.startCreateSerivce();
+            await this.startCreateDialog();
         }
         else
             await this.execute();
@@ -37,7 +37,7 @@ export class ServiceGenerate extends BaseGenerate {
         return inquirer.prompt([{ 
             name: 'value',
             type: 'input',
-            message: 'What is path and name? (ex.: services/auth)',
+            message: 'What is path and name? (ex.: dialogs/alert)',
         }]);
     };
 
@@ -58,20 +58,23 @@ export class ServiceGenerate extends BaseGenerate {
         return true;
     }
 
-    private async startCreateSerivce() {
+    private async startCreateDialog() {
         let creator = new FileCreator();
         let { fileInstructions, lastDirectory } = this.getBaseFileInstructions();
+        
+        let fileDirInstruction = {
+            name: this.fileName,
+            children: [
+                { name: `${this.fileName}.dialog.html`, content: this.replaceVariablesInContentFile(DIALOG_HTML) },
+                { name: `${this.fileName}.dialog.scss`, content: this.replaceVariablesInContentFile(DIALOG_SCSS) },
+                { name: `${this.fileName}.dialog.ts`, content: this.replaceVariablesInContentFile(DIALOG_TS) },
+            ]
+        };
 
         if (lastDirectory)
-            lastDirectory.children.push({
-                name: `${this.fileName}.service.ts`,
-                content: this.replaceVariablesInContentFile(SERVICE_TS)
-            });
+            lastDirectory.children.push(fileDirInstruction);
         else
-            fileInstructions.push({
-                name: this.fileName,
-                content: this.replaceVariablesInContentFile(SERVICE_TS)
-            });
+            fileInstructions.push(fileDirInstruction);
 
         creator.initialize(fileInstructions);
 

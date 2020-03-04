@@ -74,7 +74,23 @@ export abstract class BaseGenerate {
         return { fileInstructions, lastDirectory };
     }
 
+    protected replaceVariablesInContentFile(content: string) {
+        let regex = /\[\[(.|\n)*?\]\]/g;
+        if (regex.test(content)) {
+            content = content.replace(regex, (name) => {
+                name = name.replace(/(^\[\[)|(\]\]$)/g, '');
+                if (name !== '')
+                    return this.getValueByName(name);
+
+                return '';
+            });
+        }
+
+        return content;
+    }
+
     abstract async execute(): Promise<void>;
     abstract question(): Promise<QuestionAnswer>;
     abstract isValid(fileName: string): boolean;
+    abstract getValueByName(fname: string): string;
 }

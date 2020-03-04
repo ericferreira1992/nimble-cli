@@ -1,5 +1,6 @@
 export enum GenerateTypes {
     PAGE = 'Page',
-    SERVICE = 'Service',
+    DIALOG = 'Dialog',
     DIRECTIVE = 'Directive',
+    SERVICE = 'Service',
 }

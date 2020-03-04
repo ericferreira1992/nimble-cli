@@ -13,7 +13,7 @@ export class [[FriendlyName]]Directive extends Directive {
     }
 
     public resolve(selector: string, value: any, element: HTMLElement, scope: IScope): void {
-
+        // Implement here
     }
 
     public onDestroy(selector: string, scope: IScope) {

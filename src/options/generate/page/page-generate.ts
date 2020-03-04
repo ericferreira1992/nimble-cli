@@ -88,22 +88,7 @@ export class PageGenerate extends BaseGenerate {
         });
     }
 
-    private replaceVariablesInContentFile(content: string) {
-        let regex = /\[\[(.|\n)*?\]\]/g;
-        if (regex.test(content)) {
-            content = content.replace(regex, (name) => {
-                name = name.replace(/(^\[\[)|(\]\]$)/g, '');
-                if (name !== '')
-                    return this.getValueByName(name);
-
-                return '';
-            });
-        }
-
-        return content;
-    }
-
-    private getValueByName(name: string){
+    public getValueByName(name: string){
         switch(name) {
             case 'Name':
                 return this.fileName;
