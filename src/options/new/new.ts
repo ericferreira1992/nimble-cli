@@ -9,9 +9,9 @@ import { FileCreator } from '../../core/file-creator/file-creator';
 import { INDEX_HTML } from './templates/public-directory';
 import { GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
-import { CONFIGURATION_JSON, STYLE_SCSS, INDEX_TS } from './templates/src-directory';
+import { NIMBLE_JSON, STYLE_SCSS, MAIN_TS } from './templates/src-directory';
 import { RESET_SCSS, VARIABLES_SCSS } from './templates/scss-directory';
-import { DEV_ENV, LOCAL_ENV, PROD_ENV } from './templates/enviroments-directory';
+import { DEV_ENV, LOCAL_ENV, PROD_ENV } from './templates/environments-directory';
 import { ROUTES_TS } from './templates/app-directory';
 import { ROOT_HTML, ROOT_SCSS, ROOT_TS } from './templates/pages/root-page-directory';
 import { FIRST_HTML, FIRST_SCSS, FIRST_TS } from './templates/pages/first-page-directory';
@@ -39,6 +39,11 @@ export class New {
     constructor(
         @inject('Logger') private logger: Logger
     ) {
+        if (CLI.isNimbleProject()) {
+            this.logger.showError('⚠️ Looks like you\'re already on a Nimble project.');
+            process.exit(0);
+        }
+
         this.execute();
     }
 
@@ -143,19 +148,19 @@ export class New {
                                 ]
                             },
                             {
-                                name: 'enviroments',
+                                name: 'environments',
                                 children: [
                                     { name: 'env.local.js', content: this.replaceVariablesInContentFile(LOCAL_ENV) },
                                     { name: 'env.dev.js', content: this.replaceVariablesInContentFile(DEV_ENV) },
                                     { name: 'env.prod.js', content: this.replaceVariablesInContentFile(PROD_ENV) },
                                 ]
                             },
-                            { name: 'configuration.json', content: this.replaceVariablesInContentFile(CONFIGURATION_JSON) },
                             { name: 'style.scss', content: this.replaceVariablesInContentFile(STYLE_SCSS) },
-                            { name: 'index.ts', content: this.replaceVariablesInContentFile(INDEX_TS) },
+                            { name: 'main.ts', content: this.replaceVariablesInContentFile(MAIN_TS) },
                         ]
                     },
                     { name: '.gitignore', content: this.replaceVariablesInContentFile(GITIGNORE) },
+                    { name: 'nimble.json', content: this.replaceVariablesInContentFile(NIMBLE_JSON) },
                     { name: 'package.json', content: this.replaceVariablesInContentFile(PACKAGE_JSON) },
                     { name: 'README.md', content: this.replaceVariablesInContentFile(README) },
                     { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) }
@@ -175,7 +180,7 @@ export class New {
         this.logger.showInfo('Installing dependencies...');
 
         let errorsMsg: string[] = [];
-        let childProcess = cp.exec(`npm run initialize --colors`, { cwd: this.projectName });
+        let childProcess = cp.exec(`npm install --colors`, { cwd: this.projectName });
 
         (childProcess.stdout as Readable).on('data', (data) => {
             console.log(data);

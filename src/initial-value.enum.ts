@@ -1,4 +1,5 @@
 export enum InitialValue {
-    NEW = 'New',
+    SERVER = 'Server',
+    BUILD = 'Build',
     GENERATE = 'Generate',
 }

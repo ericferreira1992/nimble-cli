@@ -16,11 +16,13 @@ export class NB {
 
     public initialArgs: string[] = [];
     public args: string[] = [];
+    private inNimbleProject: boolean = false;
 
     constructor(
         @inject('Logger') private logger: Logger
     )
     {
+        this.inNimbleProject = CLI.isNimbleProject();
     }
 
     public setArgurments(args: string[]) {
@@ -46,56 +48,51 @@ export class NB {
             return this.logger.showVersion();
         if (arg === 'serve' || arg === 's')
             return CLI.inject<Serve>('Serve').execute(this.args);
-            // return this.runServe();
         if (arg === 'build' || arg === 'b')
             return CLI.inject<Build>('Build').execute(this.args);
-            // return this.runBuild();
-    }
-
-    private async execute() {
-        let answer: QuestionAnswer = await inquirer.prompt([{ 
-            name: 'value',
-            type: 'list',
-            message: 'Select what do you want:',
-            choices: [
-                {name: 'Generate', value: InitialValue.GENERATE},
-                {name: 'Create a project', value: InitialValue.NEW},
-            ]
-        }]);
-
-        switch(answer.value) {
-            case InitialValue.NEW:
-                CLI.inject<New>('New');
-                break;
-            case InitialValue.GENERATE:
-                CLI.inject<Generate>('Generate');
-                break;
+        if (arg === 'new') {
+            return CLI.inject<New>('New');
         }
     }
 
-    /* private async runServe() {
-        let nexts = this.args.slice(1);
-        let env = this.getArgValueIfExists(nexts, '--env');
-        let childProcess = cp.exec(`webpack-dev-server --env=${env ? env : 'local'} --devtool source-map --colors`);
-        (childProcess.stdout as Readable).on('data', (data) => {
-            console.log(data);
-        });
-        (childProcess.stderr as Readable).on('data', (data) => {
-            console.log(data);
-        });
-    }
+    private async execute() {
+        if (this.inNimbleProject) {
+            let answer: QuestionAnswer = await inquirer.prompt([{ 
+                name: 'value',
+                type: 'list',
+                message: 'Select what do you want:',
+                choices: [
+                    {name: '🛠  Generate', value: InitialValue.GENERATE},
+                    {name: '🖥  Run server', value: InitialValue.SERVER},
+                    {name: '🚀 Run build', value: InitialValue.BUILD},
+                    {name: '↙️ Exit', value: ''},
+                ]
+            }]);
+    
+            switch(answer.value) {
+                case InitialValue.SERVER:
+                    CLI.inject<Serve>('Serve');
+                    break;
+                case InitialValue.BUILD:
+                    CLI.inject<Build>('Build');
+                    break;
+                case InitialValue.GENERATE:
+                    CLI.inject<Generate>('Generate');
+                    break;
+            }
+        }
+        else {
+            let answer: QuestionAnswer = await inquirer.prompt([{ 
+                name: 'value',
+                type: 'confirm',
+                message: 'Do you want create new Nimble project?',
+            }]);
 
-    private async runBuild() {
-        let nexts = this.args.slice(1);
-        let env = this.getArgValueIfExists(nexts, '--env');
-        let childProcess = cp.exec(`webpack --env=${env ? env : 'prod'} --colors`);
-        (childProcess.stdout as Readable).on('data', (data) => {
-            console.log(data);
-        });
-        (childProcess.stderr as Readable).on('data', (data) => {
-            console.log(data);
-        });
-    } */
+            if (answer.value) {
+                CLI.inject<New>('New');
+            }
+        }
+    }
 
     private getArgValueIfExists(args: string[], name: string): string | boolean {
         for(let arg of args) {

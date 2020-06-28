@@ -9,7 +9,7 @@ export class CLI {
     public static container = new Container();
     public static nb: NB;
     public static package: any;
-    public static nimbleVersion: string = '1.2.0';
+    public static nimbleVersion: string = '1.2.1';
 
     public static get version() { return this.package ? this.package.version : '1.0.0'; }
 
@@ -29,18 +29,22 @@ export class CLI {
     }
 
     public static worksPathIsRootProject(path?: string) {
-        if (!path)
-            path = this.worksPath;
-        if(!path.endsWith('/'))
-            path += '/';
+        if (!path) path = this.worksPath;
+        if(!path.endsWith('/')) path += '/';
 
-        if (fs.pathExistsSync(`${path}src`) && fs.existsSync(`${path}package.json`)) {
-            let packageFile = null;
-            try { packageFile = require(`${path}package.json`); } catch {}
-            if (packageFile)
-                return packageFile['dependencies'] && packageFile['dependencies']['@nimble-ts/core'];
+        if (!fs.pathExistsSync(`${path}src`) || !fs.existsSync(`${path}package.json`)) {
+            return false
         }
-        return false;
+        if (!fs.existsSync(`${path}nimble.json`)) {
+            return false;
+        }
+
+        let packageFile = null;
+        try { packageFile = require(`${path}package.json`); } catch {}
+        if (!packageFile || !packageFile['dependencies'] || !packageFile['dependencies']['@nimble-ts/core'])
+            return false;
+
+        return true;
     }
 
     public static worksPathIsSourceDir() {

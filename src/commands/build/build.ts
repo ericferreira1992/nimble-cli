@@ -7,6 +7,7 @@ import { ArgsResolver } from '../../core/args-resolver';
 import { webpackConfig } from '../config/webpack.config';
 import { PATHS } from '../../core/dev-utils/paths';
 import { webpackDevServerUtils } from '../../core/dev-utils/webpack-dev-server-utils';
+import { CLI } from '../../cli';
 
 @injectable()
 export class Build {
@@ -24,6 +25,11 @@ export class Build {
     }
 
     public async execute(args: string[]) {
+        if (!CLI.isNimbleProject()){
+            this.logger.showError('To continue you must be in a Nimble project.');
+            process.exit(0);
+        }
+        
         this.args = new ArgsResolver(args);
 
         const config = webpackConfig(this.env, true);

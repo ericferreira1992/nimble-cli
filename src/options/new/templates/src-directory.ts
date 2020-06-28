@@ -1,4 +1,4 @@
-export const CONFIGURATION_JSON = 
+export const NIMBLE_JSON = 
 `{
     "pre-render": {
         "enabled": true,
@@ -11,7 +11,7 @@ export const CONFIGURATION_JSON =
     }
 }`;
 
-export const INDEX_TS =
+export const MAIN_TS =
 `import { NimbleApp } from '@nimble-ts/core';
 import { ROUTES } from './app/routes';
 import './style.scss';

@@ -7,15 +7,15 @@ import PrerenderSpaPlugin from 'prerender-spa-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 let configuration: any = {};
-try { configuration = require(process.cwd() + '/src/configuration.json'); }
+try { configuration = require(process.cwd() + '/nimble.json'); }
 catch{ configuration = {}; }
 
 const Renderer = PrerenderSpaPlugin.PuppeteerRenderer;
 
 const distPath = path.resolve(process.cwd(), 'build');
 
-export function webpackConfig(env: string, isProdMod: boolean = false) {
-    let enviroment = loadEnvFile(env);
+export async function webpackConfig(env: string, isProdMod: boolean = false) {
+    let enviroment = await loadEnvFile(env);
     let config = {
         mode: isProdMod ? 'production' : 'development',
         entry: getEntries(),
@@ -59,7 +59,7 @@ export function webpackConfig(env: string, isProdMod: boolean = false) {
 
 function getEntries() {
 
-    let entry = { 'main': process.cwd() + '/src/index.ts' } as any;
+    let entry = { 'main': process.cwd() + '/src/main.ts' } as any;
 
     if (configuration.vendors) {
         if (configuration.vendors.js && configuration.vendors.js.length > 0)
@@ -174,9 +174,9 @@ function getRules(isProdMod: boolean, enviroment: any) {
     return rules;
 }
 
-function loadEnvFile(env: string) {
+async function loadEnvFile(env: string) {
     if (env) {
-        var enviroment = require(`${process.cwd()}/src/enviroments/env.${env}.js`);
+        var enviroment = await import(`${process.cwd()}/src/environments/env.${env}.js`);
         if (enviroment) {
             return enviroment;
         }

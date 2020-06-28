@@ -2,11 +2,13 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import chalk from 'chalk';
 import { inject, injectable } from 'inversify';
+import { Helper } from '../../core/helper';
 import { Logger } from '../../utils/logger.util';
 import { ArgsResolver } from '../../core/args-resolver';
 import { webpackConfig } from '../config/webpack.config';
 import { PATHS } from '../../core/dev-utils/paths';
 import { webpackDevServerUtils } from '../../core/dev-utils/webpack-dev-server-utils';
+import { CLI } from '../../cli';
 
 @injectable()
 export class Serve {
@@ -26,9 +28,14 @@ export class Serve {
     }
 
     public async execute(args: string[]) {
+        if (!CLI.isNimbleProject()){
+            this.logger.showError('To continue you must be in a Nimble project.');
+            process.exit(0);
+        }
+
         this.args = new ArgsResolver(args);
 
-        const config = webpackConfig(this.env);
+        const config = await webpackConfig(this.env);
         const protocol = this.args.has('https') ? 'https' : 'http';
         const appName = require(PATHS.appPackageJson).name;
         const urls = webpackDevServerUtils.prepareUrls(protocol, this.host, this.port);
