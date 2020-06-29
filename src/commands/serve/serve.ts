@@ -27,7 +27,7 @@ export class Serve {
     ) {
     }
 
-    public async execute(args: string[]) {
+    public async execute(args: string[] = []) {
         if (!CLI.isNimbleProject()){
             this.logger.showError('To continue you must be in a Nimble project.');
             process.exit(0);

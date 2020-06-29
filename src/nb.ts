@@ -71,10 +71,10 @@ export class NB {
     
             switch(answer.value) {
                 case InitialValue.SERVER:
-                    CLI.inject<Serve>('Serve');
+                    CLI.inject<Serve>('Serve').execute();
                     break;
                 case InitialValue.BUILD:
-                    CLI.inject<Build>('Build');
+                    CLI.inject<Build>('Build').execute();
                     break;
                 case InitialValue.GENERATE:
                     CLI.inject<Generate>('Generate');

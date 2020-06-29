@@ -1,4 +1,4 @@
-import { red, green, cyan } from 'kleur';
+import { red, green, cyan, yellow } from 'kleur';
 import * as figlet from 'figlet';
 
 import { injectable } from 'inversify';
@@ -17,6 +17,10 @@ export class Logger {
         console.log(cyan(figlet.textSync(ConsoleMessage.TITLE, { horizontalLayout: 'full' })));
         console.info(ConsoleMessage.ABOUT);
         console.info('Version: ' + cyan(CLI.version));
+    }
+      
+    public showWarn(message: string | Error): void {
+        console.warn(yellow(ConsoleMessage.WARN) + message);
     }
       
     public showError(message: string | Error): void {

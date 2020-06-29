@@ -24,7 +24,7 @@ export class Build {
     ) {
     }
 
-    public async execute(args: string[]) {
+    public async execute(args: string[] = []) {
         if (!CLI.isNimbleProject()){
             this.logger.showError('To continue you must be in a Nimble project.');
             process.exit(0);
@@ -32,7 +32,7 @@ export class Build {
         
         this.args = new ArgsResolver(args);
 
-        const config = webpackConfig(this.env, true);
+        const config = await webpackConfig(this.env, true);
 
         this.build(config)
             .then(

@@ -48,6 +48,15 @@ export async function webpackConfig(env: string, isProdMod: boolean = false) {
 
                 return aliases;
             })(),
+        },
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    defaultVendors: {
+                        reuseExistingChunk: true
+                    }
+                }
+            }
         }
     };
 
@@ -59,18 +68,21 @@ export async function webpackConfig(env: string, isProdMod: boolean = false) {
 
 function getEntries() {
 
-    let entry = { 'main': process.cwd() + '/src/main.ts' } as any;
+    let entry: { [key: string]: string[] } = {
+        'main': [process.cwd() + '/src/main.ts']
+    };
 
     if (configuration.vendors) {
         if (configuration.vendors.js && configuration.vendors.js.length > 0)
-            entry['js.vendors'] = configuration.vendors.js.map((file: string) => {
+            entry.main = entry.main.concat(configuration.vendors.js.map((file: string) => {
                 return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
-            });
+            }));
         if (configuration.vendors.css && configuration.vendors.css.length > 0)
-            entry['css.vendors'] = configuration.vendors.css.map((file: string) => {
+            entry.main = entry.main.concat(configuration.vendors.css.map((file: string) => {
                 return process.cwd() + (file.endsWith('/') ? '' : '/') + file;
-            });
+            }));
     }
+
     return entry;
 }
 
@@ -142,7 +154,8 @@ function getRules(isProdMod: boolean, enviroment: any) {
                 {
                     loader: 'sass-loader',
                     options: {
-                        sourceMap: !isProdMod
+                        sourceMap: !isProdMod,
+                        minimize: isProdMod
                     }
                 }
             ]
@@ -167,7 +180,10 @@ function getRules(isProdMod: boolean, enviroment: any) {
         },
         {
             test: /\.html$/,
-            use: 'html-loader'
+            loader: 'html-loader',
+            options: {
+                minimize: isProdMod
+            },
         }
     ];
 

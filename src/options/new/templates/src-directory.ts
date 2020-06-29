@@ -7,14 +7,15 @@ export const NIMBLE_JSON =
     },
     "vendors": {
         "js": [],
-        "css": []
+        "css": [
+            "src/style.scss"
+        ]
     }
 }`;
 
 export const MAIN_TS =
 `import { NimbleApp } from '@nimble-ts/core';
 import { ROUTES } from './app/routes';
-import './style.scss';
 
 NimbleApp.config({
     routes: ROUTES,

@@ -3,6 +3,7 @@ export enum ConsoleMessage {
     ABOUT = 'Command line interface to Nimble framework. You can create a project from scratch to a directive for your ongoing project.',
     VERSION = '1.0.0',
     ERROR = 'ERROR: ',
+    WARN = 'WARNING: ',
     SUCCESS = 'SUCCESS: ',
     INFO = 'INFO: ',
     CREATED = 'CREATED: ',

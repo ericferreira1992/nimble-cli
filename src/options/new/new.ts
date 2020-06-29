@@ -40,7 +40,7 @@ export class New {
         @inject('Logger') private logger: Logger
     ) {
         if (CLI.isNimbleProject()) {
-            this.logger.showError('⚠️ Looks like you\'re already on a Nimble project.');
+            this.logger.showWarn('⚠️ Looks like you\'re already on a Nimble project.');
             process.exit(0);
         }
 
