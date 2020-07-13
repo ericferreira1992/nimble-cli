@@ -7,15 +7,16 @@ import { Logger } from '../../utils/logger.util';
 import { FileCreator } from '../../core/file-creator/file-creator';
 
 import { INDEX_HTML } from './templates/public-directory';
-import { GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
+import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
-import { NIMBLE_JSON, STYLE_SCSS, MAIN_TS } from './templates/src-directory';
+import { STYLE_SCSS, MAIN_TS } from './templates/src-directory';
 import { RESET_SCSS, VARIABLES_SCSS } from './templates/scss-directory';
 import { DEV_ENV, LOCAL_ENV, PROD_ENV } from './templates/environments-directory';
 import { ROUTES_TS } from './templates/app-directory';
 import { ROOT_HTML, ROOT_SCSS, ROOT_TS } from './templates/pages/root-page-directory';
 import { FIRST_HTML, FIRST_SCSS, FIRST_TS } from './templates/pages/first-page-directory';
 import { SECOND_HTML, SECOND_SCSS, SECOND_TS } from './templates/pages/second-page-directory';
+import { THIRD_HTML, THIRD_SCSS, THIRD_TS } from './templates/pages/third-page-directory';
 import { Readable } from 'stream';
 
 @injectable()
@@ -98,7 +99,17 @@ export class New {
                             { name: 'favicon.ico', from: __dirname + '/templates/files/favicon.ico' },
                             {
                                 name: 'assets',
-                                children: [{ name: 'css' }, { name: 'fonts' }, { name: 'img' }, { name: 'js' }]
+                                children: [
+									{ name: 'css' },
+									{ name: 'fonts' },
+									{
+										name: 'img',
+										children: [
+											{ name: 'logo.svg', from: __dirname + '/templates/files/logo.svg'  }
+										]
+									},
+									{ name: 'js' }
+								]
                             },
                         ]
                     },
@@ -136,6 +147,14 @@ export class New {
                                                     { name: 'second.page.ts', content: this.replaceVariablesInContentFile(SECOND_TS) },
                                                 ]
                                             },
+                                            {
+                                                name: 'third',
+                                                children: [
+                                                    { name: 'third.page.html', content: this.replaceVariablesInContentFile(THIRD_HTML) },
+                                                    { name: 'third.page.scss', content: this.replaceVariablesInContentFile(THIRD_SCSS) },
+                                                    { name: 'third.page.ts', content: this.replaceVariablesInContentFile(THIRD_TS) },
+                                                ]
+                                            }
                                         ]
                                     }
                                 ]

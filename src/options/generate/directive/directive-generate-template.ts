@@ -12,11 +12,11 @@ export class [[FriendlyName]]Directive extends Directive {
         super();
     }
 
-    public resolve(selector: string, value: any): void {
+    public onResolve(selector: string, value: any): void {
         // Implement here
     }
 
-    public onDestroy(selector: string) {
+    public onDestroy() {
 		// If needed, implement here
     }
 

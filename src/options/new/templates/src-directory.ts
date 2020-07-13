@@ -1,18 +1,3 @@
-export const NIMBLE_JSON = 
-`{
-    "pre-render": {
-        "enabled": true,
-        "routes": [
-        ]
-    },
-    "vendors": {
-        "js": [],
-        "css": [
-            "src/style.scss"
-        ]
-    }
-}`;
-
 export const MAIN_TS =
 `import { NimbleApp } from '@nimble-ts/core';
 import { ROUTES } from './app/routes';

@@ -1,3 +1,18 @@
+export const NIMBLE_JSON = 
+`{
+    "pre-render": {
+        "enabled": true,
+        "routes": [
+        ]
+    },
+    "vendors": {
+        "js": [],
+        "css": [
+            "src/style.scss"
+        ]
+    }
+}`;
+
 export const PACKAGE_JSON =
 `{
     "name": "[[ProjectName]]",
@@ -5,10 +20,11 @@ export const PACKAGE_JSON =
     "scripts": {
         "start": "nb serve",
         "build": "nb build",
-        "serve:local": "nb serve --env=local",
+        "serve": "nb serve --env=local",
         "serve:dev": "nb serve --env=dev",
-        "build:prod": "nb build --env=prod",
-        "build:dev": "nb build --env=dev"
+        "serve:prod": "nb serve --env=prod",
+        "build:dev": "nb build --env=dev",
+        "build:prod": "nb build --env=prod"
     },
     "private": true,
     "dependencies": {
