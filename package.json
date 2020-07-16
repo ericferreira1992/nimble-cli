@@ -1,6 +1,6 @@
 {
     "name": "@nimble-ts/cli",
-    "version": "1.2.5",
+    "version": "1.2.7",
     "description": "The CLI tool for Nimble framework",
     "author": "Eric Ferreira",
     "repository": "https://github.com/ericferreira1992/nimble-cli",
@@ -54,6 +54,7 @@
         "recursive-readdir": "^2.2.2",
         "reflect-metadata": "^0.1.13",
         "sass-loader": "^7.1.0",
+        "semver": "^7.3.2",
         "style-loader": "^0.23.1",
         "ts-loader": "^6.2.1",
         "tslib": "^1.10.0",

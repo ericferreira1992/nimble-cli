@@ -1,2 +1,9 @@
 #!/usr/bin/env node
-require("../lib/cli.js");
+
+let command = null;
+
+try {
+    command = require(`${process.cwd()}/node_modules/@nimble-ts/cli/lib/cli.js`);
+} catch (e) {
+    command = require("../lib/cli.js");
+}

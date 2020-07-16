@@ -2,14 +2,14 @@ export const FIRST_HTML =
 `<div  class="first-page">
 	<span>😎</span><br>
 	<div>
-		Wellcome to <strong>Nimble framework</strong>
+		Welcome to <strong>Nimble framework</strong>
 	</div>
 
-	<p>
-		Look what to do:
-	</p>
-
 	<div class="page-example">
+		<p>
+			Look what to do:
+		</p>
+
 		<button (click)="decrease()">-</button>
 		<button (click)="increase()">+</button>
 		<div class="line-bar">
@@ -30,9 +30,10 @@ export const FIRST_SCSS =
 	}
 	
 	.page-example {
-		padding-top: 10px;
+		border-top: dashed 2px rgba(#FFF, .25);
 		max-width: 300px;
 		margin: auto;
+		margin-top: 25px;
 
 		> button {
 			outline: 0;

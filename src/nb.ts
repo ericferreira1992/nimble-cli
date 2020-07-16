@@ -1,5 +1,4 @@
 import inquirer = require('inquirer');
-import * as cp from 'child_process';
 import { injectable, inject } from 'inversify';
 import { Logger } from './utils/logger.util';
 import { InitialValue } from './initial-value.enum';
@@ -7,7 +6,6 @@ import { QuestionAnswer } from './core/question-answer.model';
 import { CLI } from './cli';
 import { New } from './options/new/new';
 import { Generate } from './options/generate/generate';
-import { Readable } from 'stream';
 import { Serve } from './commands/serve/serve';
 import { Build } from './commands/build/build';
 
@@ -65,7 +63,7 @@ export class NB {
                     {name: '🛠  Generate', value: InitialValue.GENERATE},
                     {name: '🖥  Run server', value: InitialValue.SERVER},
                     {name: '🚀 Run build', value: InitialValue.BUILD},
-                    {name: '↙️ Exit', value: ''},
+                    {name: '↙️   Exit', value: ''},
                 ]
             }]);
     
