@@ -38,6 +38,7 @@ export const SECOND_SCSS =
 		width: calc(100% + 60px);
 		margin: 0 -30px;
 		margin-top: 70px;
+		height: 200px;
 
 		> p {
 			margin-top: -35px;

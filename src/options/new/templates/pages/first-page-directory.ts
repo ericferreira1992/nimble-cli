@@ -40,12 +40,12 @@ export const FIRST_SCSS =
 			margin: 0 5px;
 			cursor: pointer;
 			background: transparent;
-			border-radius: 50%;
+			border-radius: 8px;
 			width: 35px;
 			height: 35px;
 			font-size: 25px;
 			font-weight: bold;
-			border: 3px solid #FFF;
+			border: 2px solid #FFF;
 			color: #FFF;
 		}
 

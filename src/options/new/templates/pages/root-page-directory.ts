@@ -12,6 +12,10 @@ export const ROOT_HTML =
 	<nimble-router class="root-content"></nimble-router>
 
 	<div @if="loading" class="root-loaing">Loading page...</div>
+
+	<div class="root-alert">
+		⚠️ This sample Nimble project does not contain any third party code or script, everything was done using native resources of HTML and of framework itself.
+	</div>
 </div>`;
 
 export const ROOT_SCSS = 
@@ -89,7 +93,19 @@ export const ROOT_SCSS =
                 }
             }
         }
-    }
+	}
+	
+	.root-alert {
+		text-align: center;
+		font-size: 11px;
+		display: block;
+		margin: auto;
+		max-width: 500px;
+		border-top: 1px dashed rgba(#FFF, 0.2);
+		margin-top: 10px;
+		padding-top: 20px;
+		color: #FFF;
+	}
 
     .root-content {
         display: block;
