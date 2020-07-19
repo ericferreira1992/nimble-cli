@@ -105,7 +105,7 @@ export class New {
 									{
 										name: 'img',
 										children: [
-											{ name: 'logo.svg', from: __dirname + '/templates/files/logo.svg'  }
+											{ name: 'logo_white.png', from: __dirname + '/templates/files/logo_white.png'  }
 										]
 									},
 									{ name: 'js' }

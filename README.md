@@ -3,21 +3,28 @@ The CLI tool for Nimble framework.
 
 ## Install
 Run in your terminal:
-```
-npm i -g @nimble-ts/cli
+```shell
+$ npm i -g @nimble-ts/cli
 ```
 
 ## Usage
 Run in your terminal:
-```
-nb
+```shell
+$ nb
 ```
 
-### Create a new Nimble project
-Run in your terminal:
+### Confirm
+```shell
+? Do you want create new Nimble project? (Y/n) 
 ```
-$ nb
-$ ? Select what do you want:
-$   Generate
-$ > Create a project
+
+### Set project name and confirm
+```shell
+? What is name of the your project? (ex.: my-project) 
 ```
+
+### Done! Run project
+```shell
+$ nb serve
+```
+After, access http://localhost:8090 :)

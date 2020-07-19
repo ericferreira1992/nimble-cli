@@ -1,7 +1,7 @@
 export const ROOT_HTML = 
 `<div  class="root-page">
 	<header>
-		<img src="/assets/img/logo.svg#white"/>
+		<img src="/assets/img/logo_white.png"/>
 		<ul>
 			<li @for="let item of menuItems" [class]="{ 'actived': routePath === item.path }">
 				<a href="/{{item.path}}">{{item.text}}</a>
