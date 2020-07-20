@@ -197,9 +197,10 @@ export class New {
 
         this.logger.breakLine();
         this.logger.showInfo('Installing dependencies...');
+        this.logger.showInfo('(This may take a few minutes)');
 
         let errorsMsg: string[] = [];
-        let childProcess = cp.exec(`npm install --colors`, { cwd: this.projectName });
+        let childProcess = cp.exec(`npm install --no-optional --colors`, { cwd: this.projectName });
 
         (childProcess.stdout as Readable).on('data', (data) => {
             console.log(data);

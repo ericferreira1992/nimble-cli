@@ -31,7 +31,7 @@ export const PACKAGE_JSON =
         "@nimble-ts/core": "^[[NimbleVersion]]"
     },
     "devDependencies": {
-        "@nimble-ts/cli": "^[[Version]]"
+        "@nimble-ts/cli": "^[[Version]]",
         "@types/node": "^12.12.7",
         "@types/webpack-env": "^1.14.1",
         "node-sass": "^4.11.0",

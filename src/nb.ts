@@ -60,10 +60,10 @@ export class NB {
                 type: 'list',
                 message: 'Select what do you want:',
                 choices: [
-                    {name: '🛠  Generate', value: InitialValue.GENERATE},
-                    {name: '🖥  Run server', value: InitialValue.SERVER},
-                    {name: '🚀 Run build', value: InitialValue.BUILD},
-                    {name: '↙️   Exit', value: ''},
+                    {name: 'Generate', value: InitialValue.GENERATE},
+                    {name: 'Run server', value: InitialValue.SERVER},
+                    {name: 'Run build', value: InitialValue.BUILD},
+                    {name: 'Exit', value: ''},
                 ]
             }]);
     

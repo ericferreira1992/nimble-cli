@@ -44,10 +44,7 @@ export class CLI {
     }
 
     public static hasGlobalInstalled(): boolean {
-		//nimble-page/node_modules/@nimble-ts/cli/lib
-		//let cliPackagePath = path.join(process.cwd(), '../');
 		if (this.workingInLocalProject()) {
-			// JSON.parse(fs.readFileSync('file', 'utf8'));
 			try {
 				let packgeJson = require("../package.json");
 				return true;
@@ -90,7 +87,10 @@ export class CLI {
 
     public static isNimbleProject() {
         let parent = this.worksPath;
-        while(parent && parent !== path.sep) {
+        
+        let rootPath = path.parse(parent).root;
+
+        while(parent && parent !== rootPath) {
             if (this.worksPathIsRootProject(parent))
                 return true;
             parent = this.getParentPath(parent);
@@ -100,16 +100,18 @@ export class CLI {
 
     public static getNimbleProjectRootPath() {
         let parent = this.worksPath;
-        while(parent && parent !== path.sep) {
+        let rootPath = path.parse(parent).root;
+
+        while(parent && parent !== rootPath) {
             if (this.worksPathIsRootProject(parent))
                 return parent;
             parent = this.getParentPath(parent);
         }
-        return '';
+        return parent;
     }
 
     public static getParentPath(completePath: string) {
-        let parentPath = path.normalize(completePath + '/..');
+        let parentPath = path.join(completePath + '/..');
         return parentPath;
     }
 
