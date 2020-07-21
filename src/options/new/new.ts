@@ -7,7 +7,7 @@ import { Logger } from '../../utils/logger.util';
 import { FileCreator } from '../../core/file-creator/file-creator';
 
 import { INDEX_HTML } from './templates/public-directory';
-import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
+import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, PACKAGE_LOCK_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
 import { STYLE_SCSS, MAIN_TS } from './templates/src-directory';
 import { RESET_SCSS, VARIABLES_SCSS } from './templates/scss-directory';
@@ -181,6 +181,7 @@ export class New {
                     { name: '.gitignore', content: this.replaceVariablesInContentFile(GITIGNORE) },
                     { name: 'nimble.json', content: this.replaceVariablesInContentFile(NIMBLE_JSON) },
                     { name: 'package.json', content: this.replaceVariablesInContentFile(PACKAGE_JSON) },
+                    { name: 'package-lock.json', content: this.replaceVariablesInContentFile(PACKAGE_LOCK_JSON) },
                     { name: 'README.md', content: this.replaceVariablesInContentFile(README) },
                     { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) }
                 ]
@@ -197,7 +198,7 @@ export class New {
 
         this.logger.breakLine();
         this.logger.showInfo('Installing dependencies...');
-        this.logger.showInfo('(This may take a few minutes)');
+        console.log('(This may take a few minutes)');
 
         let errorsMsg: string[] = [];
         let childProcess = cp.exec(`npm install --no-optional --colors`, { cwd: this.projectName });
