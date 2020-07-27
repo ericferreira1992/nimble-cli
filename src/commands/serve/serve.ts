@@ -1,8 +1,8 @@
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import chalk from 'chalk';
+import fs from 'fs-extra';
 import { inject, injectable } from 'inversify';
-import { Helper } from '../../core/helper';
 import { Logger } from '../../utils/logger.util';
 import { ArgsResolver } from '../../core/args-resolver';
 import { webpackConfig } from '../config/webpack.config';
@@ -21,6 +21,7 @@ export class Serve {
     private get host() { return this.args.getValue('host', this.DEFAULT_HOST) as string; }
     private get port() { return parseInt(this.args.getValue('port', this.DEFAULT_PORT) as string); }
     private get env() { return this.args.getValue('env', this.DEFAULT_ENV) as string; }
+    private get baseHref() { return this.args.getValue('baseHref', '') as string; }
 
     constructor(
         @inject('Logger') private logger: Logger
@@ -35,7 +36,11 @@ export class Serve {
 
         this.args = new ArgsResolver(args);
 
-        const config = await webpackConfig(this.env);
+		let options = {} as any;
+
+		if (this.args.has('baseHref')) options.baseHref = this.baseHref 
+
+        const config = await webpackConfig(this.env, options);
         const protocol = this.args.has('https') ? 'https' : 'http';
         const appName = require(PATHS.appPackageJson).name;
         const urls = webpackDevServerUtils.prepareUrls(protocol, this.host, this.port);
@@ -57,15 +62,38 @@ export class Serve {
         const devServer = new WebpackDevServer(compiler, {
             host: this.host,
             port: this.port,
-            historyApiFallback: true
+			historyApiFallback: true,
+			onListening: (server) => {
+			},
+			before: (app, server) => {
+				server.log.info = (...args) => {
+					return null;
+					//return server.log.info(...args);
+					// return server.log.info(...(args.map(s => {
+					// 	return `--- ${s}`
+					// })));
+				}
+			}
         });
 
         devServer.listen(this.port, this.host, err => {
             if (err) {
                 return console.log(err);
-            }
+			}
+			
+			console.log('');
+			console.log('❯ Nimble project is running at', chalk.yellow(`http://${this.host}:${this.port}/`));
 
-            console.log(chalk.cyan('Starting the development server...\n'));
+			if (fs.existsSync(`${process.cwd()}/src/environments/env.${this.env}.js`)) {
+				console.log('❯ Environment from:', chalk.yellow(`src/environments/env.${this.env}`));
+			}
+			else {
+				console.log('❯ Environment:', chalk.red('not found'));
+			}
+
+			console.log('');	
+
+            console.log(chalk.cyan('❯ Await, starting the server...\n'));
             // openBrowser(urls.localUrlForBrowser);
         });
 

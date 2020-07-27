@@ -1,12 +1,11 @@
 import webpack from 'webpack';
-import path from 'path';
+import fs from 'fs-extra';
 import chalk from 'chalk';
+import path from 'path';
 import { inject, injectable } from 'inversify';
 import { Logger } from '../../utils/logger.util';
 import { ArgsResolver } from '../../core/args-resolver';
 import { webpackConfig } from '../config/webpack.config';
-import { PATHS } from '../../core/dev-utils/paths';
-import { webpackDevServerUtils } from '../../core/dev-utils/webpack-dev-server-utils';
 import { CLI } from '../../cli';
 
 @injectable()
@@ -18,6 +17,7 @@ export class Build {
     private WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 
     private get env() { return this.args.getValue('env', this.DEFAULT_ENV) as string; }
+    private get baseHref() { return this.args.getValue('baseHref', '') as string; }
 
     constructor(
         @inject('Logger') private logger: Logger
@@ -26,33 +26,37 @@ export class Build {
 
     public async execute(args: string[] = []) {
         if (!CLI.isNimbleProject()){
-            this.logger.showError('To continue you must be in a Nimble project.');
+            this.logger.showError('To continue you must be inside a Nimble project.');
             process.exit(0);
         }
         
         this.args = new ArgsResolver(args);
 
-        const config = await webpackConfig(this.env, true);
+		let options = {
+			baseHref: this.baseHref
+		}
+		
+        const config = await webpackConfig(this.env, options, true);
 
         this.build(config)
             .then(
                 ({ stats, warnings }) => {
                     if (warnings.length) {
-                        console.log(chalk.yellow('Compiled with warnings.\n'));
+                        console.log(chalk.green(`✔ Compiled successfully`), chalk.yellow(`but with warnings:`));
+						console.log('____________________________________________________');
+						console.log();
                         console.log(warnings.join('\n\n'));
-                        console.log(
-                            '\nSearch for the ' +
-                            chalk.underline(chalk.yellow('keywords')) +
-                            ' to learn more about each warning.'
-                        );
-                        console.log(
-                            'To ignore, add ' +
-                            chalk.cyan('// eslint-disable-next-line') +
-                            ' to the line before.\n'
-                        );
+						console.log('____________________________________________________');
+                        //console.log(`\nSearch for the ${chalk.underline(chalk.yellow('keywords'))} to learn more about each warning.`);
+                        //console.log(`To ignore, add ${chalk.cyan('// eslint-disable-next-line')} to the line before.\n`);
                     } else {
-                        console.log(chalk.green('Compiled successfully.\n'));
-                    }
+                        console.log(chalk.green('✔ Compiled successfully!\n'));
+					}
+					console.log();
+
+					let directoriesSplited = process.cwd().split(path.sep);			
+					console.log('❯ Directory where the build is:', chalk.yellow(`${directoriesSplited[directoriesSplited.length - 1]}/build`));
+					console.log();
                 },
                 err => {
                     if (err && err.message) {
@@ -80,6 +84,8 @@ export class Build {
     }
 
     private build(config: any) {
+		console.log('');
+
         if (process.env.NODE_PATH) {
             console.log(
                 chalk.yellow(
@@ -88,8 +94,16 @@ export class Build {
             );
             console.log();
         }
+		
+		if (fs.existsSync(`${process.cwd()}/src/environments/env.${this.env}.js`)) {
+			console.log('❯ Using environment:', chalk.yellow(`src/environments/env.${this.env}`));	
+		}
+		else {
+			console.log('❯ Environment:', chalk.red('not found'));
+		}
 
-        console.log('Creating an optimized production build...');
+        console.log(chalk.cyan('❯ Await, creating an optimized production build...'));
+		console.log();
 
         const compiler = webpack(config);
         return new Promise<{ stats: any, warnings: string[] }>((resolve, reject) => {
@@ -112,7 +126,8 @@ export class Build {
                         errors: [errMessage],
                         warnings: [],
                     });
-                } else {
+				}
+				else {
                     messages = this.formatWebpackMessages(
                         stats.toJson({ all: false, warnings: true, errors: true })
                     );
@@ -122,20 +137,6 @@ export class Build {
                         messages.errors.length = 1;
                     }
                     return reject(new Error(messages.errors.join('\n\n')));
-                }
-                if (
-                    process.env.CI &&
-                    (typeof process.env.CI !== 'string' ||
-                        process.env.CI.toLowerCase() !== 'false') &&
-                    messages.warnings.length
-                ) {
-                    console.log(
-                        chalk.yellow(
-                            '\nTreating warnings as errors because process.env.CI = true.\n' +
-                            'Most CI servers set it automatically.\n'
-                        )
-                    );
-                    return reject(new Error(messages.warnings.join('\n\n')));
                 }
 
                 return resolve({ stats, warnings: messages.warnings });

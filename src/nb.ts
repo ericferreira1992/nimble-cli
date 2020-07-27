@@ -1,4 +1,5 @@
 import inquirer = require('inquirer');
+import fs from 'fs-extra';
 import { injectable, inject } from 'inversify';
 import { Logger } from './utils/logger.util';
 import { InitialValue } from './initial-value.enum';
@@ -44,7 +45,7 @@ export class NB {
         this.args = this.args.slice(1);
         if (arg === '--version' || arg === '-v')
             return this.logger.showVersion();
-        if (arg === 'serve' || arg === 's')
+        if (arg === 'serve' || arg === 'server' || arg === 's')
             return CLI.inject<Serve>('Serve').execute(this.args);
         if (arg === 'build' || arg === 'b')
             return CLI.inject<Build>('Build').execute(this.args);
@@ -72,7 +73,23 @@ export class NB {
                     CLI.inject<Serve>('Serve').execute();
                     break;
                 case InitialValue.BUILD:
-                    CLI.inject<Build>('Build').execute();
+					let enviroments = this.getAllExistingsEnviroments();
+
+					if (enviroments.length > 0) {
+						let answer: QuestionAnswer = await inquirer.prompt([{ 
+							name: 'value',
+							type: 'list',
+							message: 'Select the environment to be used:',
+							choices: enviroments.map(env => ({
+								name: env, value: env
+							}))
+						}]);
+	
+						CLI.inject<Build>('Build').execute([`--env=${answer.value}`]);
+					}
+					else {
+						CLI.inject<Build>('Build').execute();
+					}
                     break;
                 case InitialValue.GENERATE:
                     CLI.inject<Generate>('Generate');
@@ -106,5 +123,17 @@ export class NB {
                 return value === arg ? true : value;
         }
         return false;
-    }
+	}
+	
+	private getAllExistingsEnviroments() {
+		let envs: string[] = [];
+		if (fs.pathExistsSync(`${process.cwd()}/src/environments`)) {
+			fs.readdirSync(`${process.cwd()}/src/environments`).forEach(file => {
+				if (/^(env\.).*[a-zA-Z0-9](\.js)$/g.test(file)) {
+					envs.push(file.replace(/^(env\.)|(\.js)$/g, ''));
+				}
+			});
+		}
+		return envs;
+	}
 }
