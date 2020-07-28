@@ -1,6 +1,6 @@
 dist
 docs
-
+.vscode/
 .DS_Store
 
 # Logs

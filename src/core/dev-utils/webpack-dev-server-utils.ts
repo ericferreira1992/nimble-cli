@@ -57,31 +57,6 @@ function prepareUrls(protocol, host, port) {
     };
 }
 
-function printInstructions(appName, urls) {
-    console.log();
-    console.log(`You can now view ${chalk.bold(appName)} in the browser.`);
-    console.log();
-
-    if (urls.lanUrlForTerminal) {
-        console.log(
-            `  ${chalk.bold('Local:')}            ${urls.localUrlForTerminal}`
-        );
-        console.log(
-            `  ${chalk.bold('On Your Network:')}  ${urls.lanUrlForTerminal}`
-        );
-    } else {
-        console.log(`  ${urls.localUrlForTerminal}`);
-    }
-
-    console.log();
-    console.log('Note that the development build is not optimized.');
-    console.log(
-        `To create a production build, use ` +
-        `${chalk.cyan(`npm run build`)}.`
-    );
-    console.log();
-}
-
 function createCompiler({ appName, config, devSocket, urls, webpack }) {
     // "Compiler" is a low-level interface to Webpack.
     // It lets us listen to some events and provide our own custom messages.
@@ -100,7 +75,7 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
         if (isInteractive) {
             clearConsole();
         }
-        console.log('Compiling...');
+        console.log('Recompiling...');
     });
 
     let isFirstCompile = true;
@@ -129,40 +104,44 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
         }); */
 
 
-    compiler.hooks.done.tap('done', async stats => {
+    // compiler.hooks.done.tap('done', async stats => {
+    compiler.hooks.done.tap('done', (stats) => {
         const statsData = stats.toJson({
             all: false,
             warnings: true,
             errors: true,
         });
 
-        if (statsData.errors.length === 0) {
-            const delayedMsg = setTimeout(() => {
-            }, 100);
+        // if (statsData.errors.length === 0) {
+        //     const delayedMsg = setTimeout(() => {
+        //     }, 100);
 
-            const messages = await tsMessagesPromise;
-            clearTimeout(delayedMsg);
-            statsData.warnings.push(...messages.errors);
-            statsData.warnings.push(...messages.warnings);
+        //     const messages = await tsMessagesPromise;
+        //     clearTimeout(delayedMsg);
+        //     statsData.warnings.push(...messages.errors);
+        //     statsData.warnings.push(...messages.warnings);
 
 
-            stats.compilation.warnings.push(...messages.errors);                
-            stats.compilation.warnings.push(...messages.warnings);
+        //     stats.compilation.warnings.push(...messages.errors);                
+        //     stats.compilation.warnings.push(...messages.warnings);
 
-            if (messages.errors.length > 0) {
-                devSocket.warnings(messages.errors);
-            } else if (messages.warnings.length > 0) {
-                devSocket.warnings(messages.warnings);
-            }
-        }
+        //     if (messages.errors.length > 0) {
+        //         devSocket.warnings(messages.errors);
+        //     } else if (messages.warnings.length > 0) {
+        //         devSocket.warnings(messages.warnings);
+        //     }
+        // }
 
         const messages = formatWebpackMessages(statsData);
         const isSuccessful = !messages.errors.length && !messages.warnings.length;
         if (isSuccessful) {
-            console.log(chalk.green('Compiled successfully!'));
+            setTimeout(() => {
+				console.log();
+				console.log('✔', chalk.green('Compiled successfully!'));
+				console.log('❯', 'Open the browser at the address:', urls.localUrlForBrowser);
+			}, 500);
         }
         if (isSuccessful && (isInteractive || isFirstCompile)) {
-            printInstructions(appName, urls);
         }
         isFirstCompile = false;
 
@@ -193,7 +172,7 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
                 chalk.cyan('// eslint-disable-next-line') +
                 ' to the line before.\n'
             );
-        }
+		}
     });
 
     return compiler;

@@ -56,23 +56,19 @@ export class Serve {
             config,
             devSocket,
             urls,
-            webpack,
-        });
+			webpack
+		});
+
+		compiler.hooks.done.tap('done', (stats) => {
+			
+		});
 
         const devServer = new WebpackDevServer(compiler, {
             host: this.host,
             port: this.port,
 			historyApiFallback: true,
-			onListening: (server) => {
-			},
 			before: (app, server) => {
-				server.log.info = (...args) => {
-					return null;
-					//return server.log.info(...args);
-					// return server.log.info(...(args.map(s => {
-					// 	return `--- ${s}`
-					// })));
-				}
+				server.log.info = (...args) => null
 			}
         });
 
