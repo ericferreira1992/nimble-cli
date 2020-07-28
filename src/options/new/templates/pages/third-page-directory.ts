@@ -1,49 +1,49 @@
 export const THIRD_HTML = 
 `<div  class="third-page">
-<span>✌🏼</span><br>
-<p>
-	Third page rendered!
-</p>
-
-<div class="page-example-1">
+	<span>✌🏼</span><br>
 	<p>
-		Look that select dropdown:
+		Third page rendered!
 	</p>
 
-	<div class="drop-down">
-		<div (click)="toggleShow()">
-			<span [class]="{ 'selected': dropDown.selected }">
-				{{dropDown.selected ? dropDown.selected.text : '🥺 Select a fruit'}}
-			</span>
+	<div class="page-example-1">
+		<p>
+			Look that select dropdown:
+		</p>
+
+		<div class="drop-down">
+			<div (click)="toggleShow()">
+				<span [class]="{ 'selected': dropDown.selected }">
+					{{dropDown.selected ? dropDown.selected.text : '🥺 Select a fruit'}}
+				</span>
+			</div>
+			<ul @if="dropDown.show">
+				<li @for="item of dropDown.items" (click)="selectItem(item)" [class]="{ 'selected': dropDown.selected === item }">
+					{{item.text}}
+				</li>
+			</ul>
 		</div>
-		<ul @if="dropDown.show">
-			<li @for="item of dropDown.items" (click)="selectItem(item)" [class]="{ 'selected': dropDown.selected === item }">
-				{{item.text}}
-			</li>
-		</ul>
 	</div>
-</div>
 
-<div class="page-example-2">
-	<p>
-		And this <strong>two way data binding</strong> using a simple form:
-	</p>
+	<div class="page-example-2">
+		<p>
+			And this <strong>two way data binding</strong> using a simple form:
+		</p>
 
-	<form [form]="myForm">
-		<input type="text" form-field-name="anyText" placeholder="Type something"/>
-	</form>
+		<form [form]="myForm">
+			<input type="text" form-field-name="anyText" placeholder="Type something"/>
+		</form>
 
-	<p @if="myForm.value.anyText">
-		😱 {{myForm.value.anyText}}
-	</p>
+		<p @if="myForm.value.anyText">
+			😱 {{myForm.value.anyText}}
+		</p>
 
-	<button @if="myForm.value.anyText && !needShowFormData" (click)="showFormData()">
-		Print form data as <strong>JSON</strong>
-	</button>
-	<span @if="myForm.value.anyText && needShowFormData">
-		{{JSON.stringify(myForm.value, null, 2)}}
-	</span>
-</div>
+		<button @if="myForm.value.anyText && !needShowFormData" (click)="showFormData()">
+			Print form data as <strong>JSON</strong>
+		</button>
+		<span @if="myForm.value.anyText && needShowFormData">
+			{{JSON.stringify(myForm.value, null, 2)}}
+		</span>
+	</div>
 </div>`;
 
 export const THIRD_SCSS = 

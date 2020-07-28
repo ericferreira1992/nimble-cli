@@ -1,12 +1,12 @@
 import path from 'path';
 import webpack from 'webpack';
-import CleanWebpackPlugin from 'clean-webpack-plugin';
+import chalk from 'chalk';
+import * as BaseHref from 'base-href-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import PrerenderSpaPlugin from 'prerender-spa-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import * as BaseHref from 'base-href-webpack-plugin';
-import chalk from 'chalk';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
 let configuration: {
 	'pre-render': {
