@@ -1,5 +1,5 @@
 export const DIRECTIVE_TS = 
-`import { Directive, PrepareDirective, IScope, Listener } from '@nimble-ts/core';
+`import { Directive, PrepareDirective, Listener } from '@nimble-ts/core';
 
 @PrepareDirective({
     selector: ['[[Name]]']
