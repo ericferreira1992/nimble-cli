@@ -88,22 +88,6 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
         });
     });
 
-    /* forkTsCheckerWebpackPlugin
-        .getCompilerHooks(compiler)
-        .receive.tap('afterTypeScriptCheck', (diagnostics, lints) => {
-            const allMsgs = [...diagnostics, ...lints];
-            const format = message =>
-                `${message.file}\n${typescriptFormatter(message, true)}`;
-
-            tsMessagesResolver({
-                errors: allMsgs.filter(msg => msg.severity === 'error').map(format),
-                warnings: allMsgs
-                    .filter(msg => msg.severity === 'warning')
-                    .map(format),
-            });
-        }); */
-
-
     // compiler.hooks.done.tap('done', async stats => {
     compiler.hooks.done.tap('done', (stats) => {
         const statsData = stats.toJson({
@@ -111,26 +95,6 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
             warnings: true,
             errors: true,
         });
-
-        // if (statsData.errors.length === 0) {
-        //     const delayedMsg = setTimeout(() => {
-        //     }, 100);
-
-        //     const messages = await tsMessagesPromise;
-        //     clearTimeout(delayedMsg);
-        //     statsData.warnings.push(...messages.errors);
-        //     statsData.warnings.push(...messages.warnings);
-
-
-        //     stats.compilation.warnings.push(...messages.errors);                
-        //     stats.compilation.warnings.push(...messages.warnings);
-
-        //     if (messages.errors.length > 0) {
-        //         devSocket.warnings(messages.errors);
-        //     } else if (messages.warnings.length > 0) {
-        //         devSocket.warnings(messages.warnings);
-        //     }
-        // }
 
         const messages = formatWebpackMessages(statsData);
         const isSuccessful = !messages.errors.length && !messages.warnings.length;

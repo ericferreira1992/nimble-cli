@@ -1,6 +1,6 @@
 {
     "name": "@nimble-ts/cli",
-    "version": "1.2.24",
+    "version": "1.2.25",
     "description": "The CLI tool for Nimble framework",
     "author": "Eric Ferreira",
     "repository": "https://github.com/ericferreira1992/nimble-cli",
