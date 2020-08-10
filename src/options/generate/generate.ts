@@ -8,6 +8,8 @@ import { PageGenerate } from './page/page-generate';
 import { ServiceGenerate } from './service/service-generate';
 import { DialogGenerate } from './dialog/dialog-generate';
 import { DirectiveGenerate } from './directive/directive-generate';
+import { GuardGenerate } from './guard/guard-generate';
+import { BaseGenerate } from './base-generate';
 
 @injectable()
 export class Generate {
@@ -23,22 +25,28 @@ export class Generate {
     }
 
     private async execute() {
-        let answer: QuestionAnswer = await this.question();
+		let answer: QuestionAnswer = await this.question();
+		let generate: undefined | BaseGenerate;
 
         switch(answer.value) {
             case GenerateTypes.PAGE:
-                await CLI.inject<PageGenerate>('PageGenerate');
+                generate = CLI.inject<PageGenerate>('PageGenerate');
                 break;
             case GenerateTypes.DIALOG:
-                await CLI.inject<DialogGenerate>('DialogGenerate');
+                generate = CLI.inject<DialogGenerate>('DialogGenerate');
                 break;
             case GenerateTypes.DIRECTIVE:
-                await CLI.inject<DirectiveGenerate>('DirectiveGenerate');
+                generate = CLI.inject<DirectiveGenerate>('DirectiveGenerate');
                 break;
             case GenerateTypes.SERVICE:
-                await CLI.inject<ServiceGenerate>('ServiceGenerate');
+                generate = CLI.inject<ServiceGenerate>('ServiceGenerate');
                 break;
-        }
+            case GenerateTypes.GUARD:
+                generate = CLI.inject<GuardGenerate>('GuardGenerate');
+                break;
+		}
+		
+		await generate?.execute();
     }
 
     private question(): Promise<QuestionAnswer> {

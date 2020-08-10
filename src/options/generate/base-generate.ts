@@ -34,10 +34,9 @@ export abstract class BaseGenerate {
     }
 
     constructor() {
-        this.execute();
     }
 
-    protected getBaseFileInstructions() {
+    protected getBaseFileInstructions(): { fileInstructions: any[], lastDirectory: any } {
         let fileInstructions = [
         ] as any[];
 

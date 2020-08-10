@@ -8,6 +8,7 @@ import { PageGenerate } from './options/generate/page/page-generate';
 import { DialogGenerate } from './options/generate/dialog/dialog-generate';
 import { ServiceGenerate } from './options/generate/service/service-generate';
 import { DirectiveGenerate } from './options/generate/directive/directive-generate';
+import { GuardGenerate } from './options/generate/guard/guard-generate';
 import { Serve } from './commands/serve/serve';
 import { Build } from './commands/build/build';
 
@@ -24,6 +25,7 @@ export class DependencyRegister {
         container.bind<DialogGenerate>('DialogGenerate').to(DialogGenerate).inSingletonScope();
         container.bind<ServiceGenerate>('ServiceGenerate').to(ServiceGenerate).inSingletonScope();
         container.bind<DirectiveGenerate>('DirectiveGenerate').to(DirectiveGenerate).inSingletonScope();
+        container.bind<GuardGenerate>('GuardGenerate').to(GuardGenerate).inSingletonScope();
 
         // Commands
         container.bind<Serve>('Serve').to(Serve).inSingletonScope();

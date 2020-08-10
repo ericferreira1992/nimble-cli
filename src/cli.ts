@@ -9,7 +9,7 @@ export class CLI {
     public static container = new Container();
     public static nb: NB;
     public static package: any;
-    public static nimbleVersion: string = '1.2.15';
+    public static nimbleVersion: string = '1.2.16';
 
     public static get version() { return this.package ? this.package.version : '1.0.0'; }
     public static get globalVersion(): string {
