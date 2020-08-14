@@ -1,7 +1,7 @@
 export const SERVICE_TS = 
-`import { Provider } from '@nimble-ts/core';
+`import { Injectable } from '@nimble-ts/core';
 
-@Provider({ single: true })
+@Injectable({ single: true })
 export class [[FriendlyName]]Service {
 
     constructor() {
