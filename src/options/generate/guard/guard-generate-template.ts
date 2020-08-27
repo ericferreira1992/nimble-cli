@@ -1,5 +1,6 @@
 export const GUARD_TS = 
-`import { RouteGuard, Route, Injectable } from '@nimble-ts/core';
+`import { RouteGuard, Route } from '@nimble-ts/core/route';
+import { Injectable } from '@nimble-ts/core/inject';
 
 @Injectable()
 export class [[FriendlyName]]Guard extends RouteGuard {

@@ -6,7 +6,7 @@ import { QuestionAnswer } from '../../core/question-answer.model';
 import { Logger } from '../../utils/logger.util';
 import { FileCreator } from '../../core/file-creator/file-creator';
 
-import { INDEX_HTML, SW_JS, MANIFEST_JSON } from './templates/public-directory';
+import { INDEX_HTML, MANIFEST_JSON } from './templates/public-directory';
 import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, PACKAGE_LOCK_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
 import { STYLE_SCSS, MAIN_TS } from './templates/src-directory';
@@ -97,7 +97,6 @@ export class New {
                         children: [
 							{ name: 'index.html', content: this.replaceVariablesInContentFile(INDEX_HTML) },
                             { name: 'manifest.json', content: this.replaceVariablesInContentFile(MANIFEST_JSON) },
-                            { name: 'sw.js', content: this.replaceVariablesInContentFile(SW_JS) },
                             { name: 'favicon.ico', from: __dirname + '/templates/files/favicon.ico' },
                             {
                                 name: 'assets',

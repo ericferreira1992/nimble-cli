@@ -99,7 +99,8 @@ export const SECOND_SCSS =
 }`;
 
 export const SECOND_TS = 
-`import { Page, PreparePage, Listener } from '@nimble-ts/core';
+`import { Page, PreparePage } from '@nimble-ts/core/page';
+import { ElementListener } from '@nimble-ts/core/render';
 
 @PreparePage({
     template: require('./second.page.html'),
@@ -114,7 +115,7 @@ export class SecondPage extends Page {
 	public boxPosition = { X: 0, Y: 0 };
 
     constructor(
-		private listener: Listener
+		private listener: ElementListener
 	) {
 		super();
 		this.mousePrevPosition.X = window.innerWidth / 2;

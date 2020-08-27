@@ -8,7 +8,7 @@ export const PAGE_SCSS =
 }`;
 
 export const PAGE_TS = 
-`import { Page, PreparePage } from '@nimble-ts/core';
+`import { Page, PreparePage } from '@nimble-ts/core/page';
 
 @PreparePage({
     template: require('./[[Name]].page.html'),

@@ -7,6 +7,7 @@ import CopyPlugin from 'copy-webpack-plugin';
 import PrerenderSpaPlugin from 'prerender-spa-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import CompressionPlugin from 'compression-webpack-plugin';
 
 let configuration: {
 	'pre-render': {
@@ -25,9 +26,9 @@ const BaseHrefWebpackPlugin = BaseHref.BaseHrefWebpackPlugin;
 
 const distPath = path.resolve(process.cwd(), 'build');
 
-let options: { baseHref?: string } = {} as any;
+let options: { baseHref?: string, gziped?: boolean } = {} as any;
 
-export async function webpackConfig(env: string, opts: { baseHref?: string }, inBuilding: boolean = false) {
+export async function webpackConfig(env: string, opts: { baseHref?: string, gziped?: boolean }, inBuilding: boolean = false) {
 	options = opts;
 	let config = {
 		mode: inBuilding ? 'production' : 'development',
@@ -78,7 +79,7 @@ export async function webpackConfig(env: string, opts: { baseHref?: string }, in
 	}
 	else {
 		config['performance'] = {
-			maxEntrypointSize: 400000,
+			maxEntrypointSize: 450000,
 			hints: 'warning'
 		};
 	}
@@ -117,7 +118,6 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		new HtmlWebpackPlugin({
 			template: process.cwd() + '/public/index.html',
 			filename: 'index.html',
-			hash: true,
 			minify: inBuilding ? {
 				removeComments: true,
 				collapseWhitespace: true,
@@ -140,9 +140,22 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		}),
 		new webpack.DefinePlugin({
 			'process.env': JSON.stringify(await loadEnvFile(env, inBuilding))
-		})
+		}),
 	];
-
+	
+	if (inBuilding && options.gziped) {
+		plugins.push(new CompressionPlugin({
+			test: /\.js(\?.*)?$/i,
+			algorithm: 'gzip',
+			filename(info) {
+				let opFile= info.path.split('.'),
+				opFileType =  opFile.pop(),
+				opFileName = opFile.join('.');
+				return `${opFileName}.${opFileType}.gzip`;
+			}
+		}));
+	}
+	
 	let preRender = configuration['pre-render'];
 	let preRenderRoutes = preRender?.routes ?? [];
 	let preRenderEnabled = preRender?.enabled ?? false;

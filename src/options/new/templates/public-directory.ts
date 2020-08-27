@@ -7,11 +7,6 @@ export const INDEX_HTML = ''+
         <title>[[ProjectFriendlyName]]</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="manifest" href="manifest.json">
-		<script>
-			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register('sw.js', { scope: '/' });
-			}
-		</script>
     </head>
     <body>
         <nimble-root></nimble-root>
@@ -37,14 +32,3 @@ export const MANIFEST_JSON = ''+
 	"display": "standalone",
 	"orientation": "natural"
 }`;
-
-export const SW_JS = ''+
-`self.addEventListener('install', e => {
-	e.waitUntil(
-		caches.open('app-cache').then(cache => {
-			return cache.addAll([
-				'/'
-			]);
-		})
-	);
-});`;

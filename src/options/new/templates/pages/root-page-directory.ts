@@ -138,7 +138,8 @@ export const ROOT_SCSS =
 }`;
 
 export const ROOT_TS = 
-`import { Page, PreparePage, Router } from '@nimble-ts/core';
+`import { Page, PreparePage } from '@nimble-ts/core/page';
+import { Router } from '@nimble-ts/core/route';
 
 @PreparePage({
     template: require('./root.page.html'),

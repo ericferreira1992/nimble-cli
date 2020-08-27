@@ -1,5 +1,6 @@
 export const DIRECTIVE_TS = 
-`import { Directive, PrepareDirective, Listener } from '@nimble-ts/core';
+`import { Directive, PrepareDirective } from '@nimble-ts/core/page';
+import { ElementListener } from '@nimble-ts/core/render';
 
 @PrepareDirective({
     selector: ['[[Name]]']
@@ -7,7 +8,7 @@ export const DIRECTIVE_TS =
 export class [[FriendlyName]]Directive extends Directive {
 
     constructor(
-        private listener: Listener
+        private listener: ElementListener
     ){
         super();
     }

@@ -1,5 +1,5 @@
 export const ROUTES_TS =
-`import { RouteBase } from '@nimble-ts/core';
+`import { RouteBase } from '@nimble-ts/core/route';
 
 export const ROUTES: RouteBase[] = [
 	{

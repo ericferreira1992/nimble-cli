@@ -18,6 +18,7 @@ export class Build {
 
     private get env() { return this.args.getValue('env', this.DEFAULT_ENV) as string; }
     private get baseHref() { return this.args.getValue('baseHref', '') as string; }
+    private get gziped() { return this.args.getValue('gziped', '') as boolean; }
 
     constructor(
         @inject('Logger') private logger: Logger
@@ -33,7 +34,8 @@ export class Build {
         this.args = new ArgsResolver(args);
 
 		let options = {
-			baseHref: this.baseHref
+			baseHref: this.baseHref,
+			gziped: this.gziped,
 		}
 		
         const config = await webpackConfig(this.env, options, true);

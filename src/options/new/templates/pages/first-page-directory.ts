@@ -69,7 +69,7 @@ export const FIRST_SCSS =
 }`;
 
 export const FIRST_TS = 
-`import { Page, PreparePage } from '@nimble-ts/core';
+`import { Page, PreparePage } from '@nimble-ts/core/page';
 
 @PreparePage({
     template: require('./first.page.html'),

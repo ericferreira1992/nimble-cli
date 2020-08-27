@@ -214,7 +214,8 @@ export const THIRD_SCSS =
 }`;
 
 export const THIRD_TS = 
-`import { Page, PreparePage, Form } from '@nimble-ts/core';
+`import { Page, PreparePage } from '@nimble-ts/core/page';
+import { Form } from '@nimble-ts/core/forms';
 
 @PreparePage({
     template: require('./third.page.html'),
