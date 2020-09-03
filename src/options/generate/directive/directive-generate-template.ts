@@ -3,7 +3,9 @@ export const DIRECTIVE_TS =
 import { ElementListener } from '@nimble-ts/core/render';
 
 @PrepareDirective({
-    selector: ['[[Name]]']
+    selector: ['[[Name]]'],
+    inputs: [],
+    outputs: []
 })
 export class [[FriendlyName]]Directive extends Directive {
 
@@ -13,8 +15,12 @@ export class [[FriendlyName]]Directive extends Directive {
         super();
     }
 
-    public onResolve(selector: string, value: any): void {
-        // Implement here
+    public onRender(): void {
+        // Implement here first render
+    }
+
+    public onChange(): void {
+        // Implement here when re-renders
     }
 
     public onDestroy() {

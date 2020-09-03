@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import fs from 'fs-extra';
 import path from 'path';
+import * as cp from 'child_process';
 import { Container } from 'inversify';
 import { DependencyRegister } from './dependency-register';
 import { NB } from './nb';
@@ -9,7 +10,14 @@ export class CLI {
     public static container = new Container();
     public static nb: NB;
     public static package: any;
-    public static nimbleVersion: string = '1.2.19';
+	
+	private static _nimbleVersion: string;
+	public static get nimbleVersion(): string {
+		if (!this._nimbleVersion) {
+			this._nimbleVersion = cp.execSync('npm show @nimble-ts/core version').toString('utf8');
+		}
+		return this._nimbleVersion;
+	}
 
     public static get version() { return this.package ? this.package.version : '1.0.0'; }
     public static get globalVersion(): string {

@@ -1,4 +1,17 @@
-# Nimble CLI
+<h1 align="center" style="color: #444">
+	<p>Nimble CLI</p>
+</h1>
+<p align="center">
+	<img align="center" src="nimble_icon.png" alt="nimble" width="80px"/>
+</p>
+
+<p align="center" style="color: #777">
+	<img align="center" src="logo.png" alt="nimble"/>
+	<p align="center">Framework</p>
+</p>
+<br>
+
+## About
 The CLI tool for Nimble framework.
 
 ## Install
@@ -27,4 +40,4 @@ $ nb
 ```shell
 $ nb serve
 ```
-After, access http://localhost:8090 :)
+After, open your browser in address: http://localhost:8090
