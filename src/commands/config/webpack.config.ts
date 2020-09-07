@@ -166,7 +166,10 @@ async function getPlugins(inBuilding: boolean, env: string) {
 			staticDir: distPath,
 			routes: routes,
 			renderer: new Renderer({
-				renderAfterDocumentEvent: 'render-event'
+				renderAfterDocumentEvent: 'render-event',
+				injectProperty: 'pre-rendering',
+				inject: 'true',
+				headless: true
 			}),
 			postProcess: (renderedRoute: any) => {
 				renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
