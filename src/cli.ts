@@ -14,7 +14,7 @@ export class CLI {
 	private static _nimbleVersion: string;
 	public static get nimbleVersion(): string {
 		if (!this._nimbleVersion) {
-			this._nimbleVersion = cp.execSync('npm show @nimble-ts/core version').toString('utf8');
+			this._nimbleVersion = cp.execSync('npm show @nimble-ts/core version').toString('utf8').replace(/(\r\n|\n|\r)/gm, "");
 		}
 		return this._nimbleVersion;
 	}
