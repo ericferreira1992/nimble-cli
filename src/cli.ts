@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import fs from 'fs-extra';
 import path from 'path';
 import * as cp from 'child_process';
+import * as semver from 'semver';
 import { Container } from 'inversify';
 import { DependencyRegister } from './dependency-register';
 import { NB } from './nb';
@@ -14,7 +15,26 @@ export class CLI {
 	private static _nimbleVersion: string;
 	public static get nimbleVersion(): string {
 		if (!this._nimbleVersion) {
-			this._nimbleVersion = cp.execSync('npm show @nimble-ts/core version').toString('utf8').replace(/(\r\n|\n|\r)/gm, "");
+			const prefix = 'npm show @nimble-ts/core';
+			const stable = cp.execSync(`${prefix} version`).toString('utf8').replace(/(\r\n|\n|\r)/gm, '');
+			const beta = cp.execSync(`${prefix} dist-tags.beta`).toString('utf8').replace(/(\r\n|\n|\r)/gm, '');
+			const alpha = cp.execSync(`${prefix} dist-tags.alpha`).toString('utf8').replace(/(\r\n|\n|\r)/gm, '');
+
+			const equalOrGreater = (v1, v2) => {
+				v1 = v1.split('-')[0];
+				v2 = v2.split('-')[0];
+				return v1 === v2 || semver.gt(v1, v2);
+			}
+
+			if (alpha && equalOrGreater(alpha, stable) && (!beta || equalOrGreater(alpha, beta))) {
+				this._nimbleVersion = alpha;
+			}
+			else if (beta && equalOrGreater(beta, stable) && (!alpha || equalOrGreater(beta, alpha))) {
+				this._nimbleVersion = beta;
+			}
+			else {
+				this._nimbleVersion = stable;
+			}
 		}
 		return this._nimbleVersion;
 	}
@@ -39,6 +59,7 @@ export class CLI {
     public static get worksPath() { return process.cwd(); }
     
     public static start() {
+		this.nimbleVersion;
         this.getInformation();
         DependencyRegister.register(this.container);
 
