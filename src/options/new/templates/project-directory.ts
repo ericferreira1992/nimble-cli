@@ -9335,7 +9335,7 @@ export const TSCONFIG =
     "compilerOptions": {
         "allowJs": true,
         "module": "esnext",
-        "target": "es5",
+        "target": "es2015",
         "sourceMap": true,
         "baseUrl": "./",
         "outDir": "./dist/",
