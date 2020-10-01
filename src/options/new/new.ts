@@ -182,7 +182,15 @@ export class New {
                     },
                     { name: '.gitignore', content: this.replaceVariablesInContentFile(GITIGNORE) },
                     { name: 'nimble.json', content: this.replaceVariablesInContentFile(NIMBLE_JSON) },
-                    { name: 'package.json', content: this.replaceVariablesInContentFile(PACKAGE_JSON) },
+                    {
+						name: 'package.json',
+						content: this.replaceVariablesInContentFile(PACKAGE_JSON, (name, value) => {
+							if (name === 'NimbleVersion' && (!value.includes('alpha') && !value.includes('beta'))) {
+								return `^${value}`;
+							}
+							return value;
+						})
+					},
                     { name: 'package-lock.json', content: this.replaceVariablesInContentFile(PACKAGE_LOCK_JSON) },
                     { name: 'README.md', content: this.replaceVariablesInContentFile(README) },
                     { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) }
@@ -223,15 +231,14 @@ export class New {
         });
     }
 
-    private replaceVariablesInContentFile(content: string) {
+    private replaceVariablesInContentFile(content: string, proccess?: (name: string, value: string) => string) {
         let regex = /\[\[(.|\n)*?\]\]/g;
         if (regex.test(content)) {
             content = content.replace(regex, (name) => {
-                name = name.replace(/(^\[\[)|(\]\]$)/g, '');
-                if (name !== '')
-                    return this.getValueByName(name);
+				name = name.replace(/(^\[\[)|(\]\]$)/g, '');
+				const value = name !== '' ? this.getValueByName(name) : '';
 
-                return '';
+                return (proccess) ? proccess(name, value) : value;
             });
         }
 
