@@ -59,7 +59,6 @@ export class CLI {
     public static get worksPath() { return process.cwd(); }
     
     public static start() {
-		this.nimbleVersion;
         this.getInformation();
         DependencyRegister.register(this.container);
 

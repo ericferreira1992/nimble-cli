@@ -172,6 +172,7 @@ async function getPlugins(inBuilding: boolean, env: string) {
 				headless: true
 			}),
 			postProcess: (renderedRoute: any) => {
+				renderedRoute.route = renderedRoute.originalRoute;
 				renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
 				renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
 
