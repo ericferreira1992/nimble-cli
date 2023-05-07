@@ -88,7 +88,7 @@ export abstract class BaseGenerate {
         return content;
     }
 
-    abstract async execute(): Promise<void>;
+    abstract execute(): Promise<void>;
     abstract question(): Promise<QuestionAnswer>;
     abstract isValid(fileName: string): boolean;
     abstract getValueByName(fname: string): string;

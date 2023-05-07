@@ -57,7 +57,7 @@ function prepareUrls(protocol, host, port) {
     };
 }
 
-function createCompiler({ appName, config, devSocket, urls, webpack }) {
+function createCompiler({ appName, config, urls, webpack }) {
     // "Compiler" is a low-level interface to Webpack.
     // It lets us listen to some events and provide our own custom messages.
     let compiler;
@@ -66,7 +66,7 @@ function createCompiler({ appName, config, devSocket, urls, webpack }) {
     } catch (err) {
         console.log(chalk.red('Failed to compile.'));
         console.log();
-        console.log(err.message || err);
+        console.log(err);
         console.log();
         process.exit(1);
     }

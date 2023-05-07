@@ -21,7 +21,7 @@ export class Build {
     private get gziped() { return this.args.getValue('gziped', '') as boolean; }
 
     constructor(
-        @inject('Logger') private logger: Logger
+        @inject('Logger')  private logger: Logger
     ) {
     }
 
@@ -131,7 +131,7 @@ export class Build {
 				}
 				else {
                     messages = this.formatWebpackMessages(
-                        stats.toJson({ all: false, warnings: true, errors: true })
+                        stats?.toJson({ all: false, warnings: true, errors: true })
                     );
                 }
                 if (messages.errors.length) {

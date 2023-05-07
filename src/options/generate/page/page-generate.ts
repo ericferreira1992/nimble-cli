@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import inquirer = require('inquirer');
+import inquirer from 'inquirer';
 import { QuestionAnswer } from '../../../core/question-answer.model';
 import { Logger } from '../../../utils/logger.util';
 import { FileCreator } from '../../../core/file-creator/file-creator';
@@ -10,7 +10,7 @@ import { BaseGenerate } from '../base-generate';
 export class PageGenerate extends BaseGenerate {
 
     constructor(
-        @inject('Logger') private logger: Logger
+        @inject('Logger')  private logger: Logger
     ) {
         super();
     }

@@ -1,18 +1,18 @@
-import inquirer = require('inquirer');
 import fs from 'fs-extra';
-import { injectable, inject } from 'inversify';
-import { Logger } from './utils/logger.util';
-import { InitialValue } from './initial-value.enum';
-import { QuestionAnswer } from './core/question-answer.model';
+import inquirer from 'inquirer';
+import { inject, injectable } from 'inversify';
 import { CLI } from './cli';
-import { New } from './options/new/new';
-import { Generate } from './options/generate/generate';
-import { Serve } from './commands/serve/serve';
 import { Build } from './commands/build/build';
+import { Serve } from './commands/serve/serve';
+import { QuestionAnswer } from './core/question-answer.model';
+import { InitialValue } from './initial-value.enum';
+import { Generate } from './options/generate/generate';
+import { New } from './options/new/new';
+import { Logger } from './utils/logger.util';
 
 @injectable()
 export class NB {
-
+    
     public initialArgs: string[] = [];
     public args: string[] = [];
     private inNimbleProject: boolean = false;

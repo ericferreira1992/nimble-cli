@@ -1,7 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import chalk from 'chalk';
-import * as BaseHref from 'base-href-webpack-plugin';
+// import * as BaseHref from 'base-href-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 import PrerenderSpaPlugin from 'prerender-spa-plugin';
@@ -19,10 +19,10 @@ let configuration: {
 } = {} as any;
 
 try { configuration = require(process.cwd() + '/nimble.json'); }
-catch{ configuration = {} as any; }
+catch { configuration = {} as any; }
 
 const Renderer = PrerenderSpaPlugin.PuppeteerRenderer;
-const BaseHrefWebpackPlugin = BaseHref.BaseHrefWebpackPlugin;
+// const BaseHrefWebpackPlugin = BaseHref.BaseHrefWebpackPlugin;
 
 const distPath = path.resolve(process.cwd(), 'build');
 
@@ -113,7 +113,7 @@ async function getPlugins(inBuilding: boolean, env: string) {
 	if (baseHref === '') baseHref = '/';
 	let willUseBaseHref = baseHref !== '' && baseHref !== '/';
 
-	let plugins = [
+	let plugins: any[] = [
 		new CleanWebpackPlugin(),
 		new HtmlWebpackPlugin({
 			template: process.cwd() + '/public/index.html',
@@ -131,9 +131,11 @@ async function getPlugins(inBuilding: boolean, env: string) {
 				minifyURLs: true,
 			} : undefined
 		}),
-		new CopyPlugin([
-			{ from: 'public', to: '' },
-		]),
+		new CopyPlugin({
+			patterns: [
+				{ from: 'public', to: '' }
+			]
+		}),
 		new MiniCssExtractPlugin({
 			filename: !inBuilding ? '[name].css' : '[name].bundle.[hash].css',
 			chunkFilename: !inBuilding ? '[id].css' : '[id].bundle.[hash].css'
@@ -142,20 +144,20 @@ async function getPlugins(inBuilding: boolean, env: string) {
 			'process.env': JSON.stringify(await loadEnvFile(env, inBuilding))
 		}),
 	];
-	
+
 	if (inBuilding && options.gziped) {
 		plugins.push(new CompressionPlugin({
 			test: /\.js(\?.*)?$/i,
 			algorithm: 'gzip',
 			filename(info) {
-				let opFile= info.path.split('.'),
-				opFileType =  opFile.pop(),
-				opFileName = opFile.join('.');
+				let opFile = info.path.split('.'),
+					opFileType = opFile.pop(),
+					opFileName = opFile.join('.');
 				return `${opFileName}.${opFileType}.gzip`;
 			}
 		}));
 	}
-	
+
 	let preRender = configuration['pre-render'];
 	let preRenderRoutes = preRender?.routes ?? [];
 	let preRenderEnabled = preRender?.enabled ?? false;
@@ -185,19 +187,19 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		}));
 	}
 
-	if (!willUsePreRender && willUseBaseHref) {
-		if ('baseHref' in options && !inBuilding) {
-			console.log();
-			console.log(chalk.yellow('Warning:'), 'the --baseHref argument is not supported on the development server.');
-			plugins.push(new BaseHrefWebpackPlugin({ baseHref: '/' }));
-		}
-		else {
-			plugins.push(new BaseHrefWebpackPlugin({ baseHref }));
-		}
-	}
-	else {
-		plugins.push(new BaseHrefWebpackPlugin({ baseHref: '/' }));
-	}
+	// if (!willUsePreRender && willUseBaseHref) {
+	// 	if ('baseHref' in options && !inBuilding) {
+	// 		console.log();
+	// 		console.log(chalk.yellow('Warning:'), 'the --baseHref argument is not supported on the development server.');
+	// 		plugins.push(new BaseHrefWebpackPlugin({ baseHref: '/' }));
+	// 	}
+	// 	else {
+	// 		plugins.push(new BaseHrefWebpackPlugin({ baseHref }));
+	// 	}
+	// }
+	// else {
+	// 	plugins.push(new BaseHrefWebpackPlugin({ baseHref: '/' }));
+	// }
 
 	return plugins;
 }

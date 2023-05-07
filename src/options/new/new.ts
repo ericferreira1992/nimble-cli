@@ -1,5 +1,5 @@
 const spawn = require('cross-spawn');
-import inquirer = require('inquirer');
+import inquirer from 'inquirer';
 import * as cp from 'child_process';
 import { inject, injectable } from 'inversify';
 import { QuestionAnswer } from '../../core/question-answer.model';
@@ -7,7 +7,7 @@ import { Logger } from '../../utils/logger.util';
 import { FileCreator } from '../../core/file-creator/file-creator';
 
 import { INDEX_HTML, MANIFEST_JSON } from './templates/public-directory';
-import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, PACKAGE_LOCK_JSON, README, TSCONFIG } from './templates/project-directory';
+import { NIMBLE_JSON, GITIGNORE, PACKAGE_JSON, README, TSCONFIG } from './templates/project-directory';
 import { CLI } from '../../cli';
 import { STYLE_SCSS, MAIN_TS } from './templates/src-directory';
 import { RESET_SCSS, VARIABLES_SCSS } from './templates/scss-directory';
@@ -38,7 +38,7 @@ export class New {
     }
 
     constructor(
-        @inject('Logger') private logger: Logger
+        @inject('Logger')  private logger: Logger
     ) {
         if (CLI.isNimbleProject()) {
             this.logger.showWarn('⚠️ Looks like you\'re already on a Nimble project.');
@@ -191,7 +191,6 @@ export class New {
 							return value;
 						})
 					},
-                    { name: 'package-lock.json', content: this.replaceVariablesInContentFile(PACKAGE_LOCK_JSON) },
                     { name: 'README.md', content: this.replaceVariablesInContentFile(README) },
                     { name: 'tsconfig.json', content: this.replaceVariablesInContentFile(TSCONFIG) }
                 ]

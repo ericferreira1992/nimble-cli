@@ -6,7 +6,7 @@ import { Logger } from './logger.util';
 @injectable()
 export class Checker {
 
-    constructor(@inject('Logger') private logger: Logger) {}
+    constructor(@inject('Logger')  private logger: Logger) {}
 
     public checkName(name: string | boolean): void {
         if (name === true) {

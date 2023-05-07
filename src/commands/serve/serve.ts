@@ -29,65 +29,61 @@ export class Serve {
     }
 
     public async execute(args: string[] = []) {
-        if (!CLI.isNimbleProject()){
+        if (!CLI.isNimbleProject()) {
             this.logger.showError('To continue you must be in a Nimble project.');
             process.exit(0);
         }
 
         this.args = new ArgsResolver(args);
 
-		let options = {} as any;
+        let options = {} as any;
 
-		if (this.args.has('baseHref')) options.baseHref = this.baseHref 
+        if (this.args.has('baseHref')) options.baseHref = this.baseHref
 
         const config = await webpackConfig(this.env, options);
         const protocol = this.args.has('https') ? 'https' : 'http';
         const appName = require(PATHS.appPackageJson).name;
         const urls = webpackDevServerUtils.prepareUrls(protocol, this.host, this.port);
 
-        const devSocket = {
-            warnings: (warnings) => devServer.sockWrite(devServer.sockets, 'warnings', warnings),
-            errors: (errors) => devServer.sockWrite(devServer.sockets, 'errors', errors),
-        };
+        // const devSocket = {
+        //     warnings: (warnings) => devServer.sockWrite(devServer.sockets, 'warnings', warnings),
+        //     errors: (errors) => devServer.sockWrite(devServer.sockets, 'errors', errors),
+        // };
 
         // Create a webpack compiler that is configured with custom messages.
         const compiler = webpackDevServerUtils.createCompiler({
             appName,
             config,
-            devSocket,
             urls,
-			webpack
-		});
+            webpack
+        });
 
-		compiler.hooks.done.tap('done', (stats) => {
-			
-		});
+        compiler.hooks.done.tap('done', (stats) => {
+
+        });
 
         const devServer = new WebpackDevServer(compiler, {
             host: this.host,
             port: this.port,
-			historyApiFallback: true,
-			before: (app, server) => {
-				server.log.info = (...args) => null
-			}
+            historyApiFallback: true,
         });
 
         devServer.listen(this.port, this.host, err => {
             if (err) {
                 return console.log(err);
-			}
-			
-			console.log('');
-			console.log('❯ Nimble project is running at', chalk.yellow(`http://${this.host}:${this.port}/`));
+            }
 
-			if (fs.existsSync(`${process.cwd()}/src/environments/env.${this.env}.js`)) {
-				console.log('❯ Environment from:', chalk.yellow(`src/environments/env.${this.env}`));
-			}
-			else {
-				console.log('❯ Environment:', chalk.red('not found'));
-			}
+            console.log('');
+            console.log('❯ Nimble project is running at', chalk.yellow(`http://${this.host}:${this.port}/`));
 
-			console.log('');	
+            if (fs.existsSync(`${process.cwd()}/src/environments/env.${this.env}.js`)) {
+                console.log('❯ Environment from:', chalk.yellow(`src/environments/env.${this.env}`));
+            }
+            else {
+                console.log('❯ Environment:', chalk.red('not found'));
+            }
+
+            console.log('');
 
             console.log(chalk.cyan('❯ Await, starting the server...\n'));
             // openBrowser(urls.localUrlForBrowser);

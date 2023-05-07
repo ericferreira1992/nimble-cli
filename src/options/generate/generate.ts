@@ -1,20 +1,20 @@
+import inquirer from 'inquirer';
 import { inject, injectable } from 'inversify';
-import inquirer = require('inquirer');
 import { CLI } from '../../cli';
 import { QuestionAnswer } from '../../core/question-answer.model';
 import { Logger } from '../../utils/logger.util';
-import { GenerateTypes } from './generate-types.enum';
-import { PageGenerate } from './page/page-generate';
-import { ServiceGenerate } from './service/service-generate';
+import { BaseGenerate } from './base-generate';
 import { DialogGenerate } from './dialog/dialog-generate';
 import { DirectiveGenerate } from './directive/directive-generate';
+import { GenerateTypes } from './generate-types.enum';
 import { GuardGenerate } from './guard/guard-generate';
-import { BaseGenerate } from './base-generate';
+import { PageGenerate } from './page/page-generate';
+import { ServiceGenerate } from './service/service-generate';
 
 @injectable()
 export class Generate {
     constructor(
-        @inject('Logger') private logger: Logger
+        @inject('Logger')  private logger: Logger
     ) {
         if (CLI.isNimbleProject())
             this.execute();

@@ -1,10 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import filesize from 'filesize';
+import { filesize } from 'filesize';
 import recursive from 'recursive-readdir';
 import stripAnsi from 'strip-ansi';
-import { sync } from 'gzip-size';
+import { gzipSizeSync } from 'gzip-size';
 
 function canReadAsset(asset) {
     return (
@@ -31,7 +31,7 @@ function printFileSizesAfterBuild(
                 .assets.filter(asset => canReadAsset(asset.name))
                 .map(asset => {
                     var fileContents = fs.readFileSync(path.join(root, asset.name));
-                    var size = sync(fileContents);
+                    var size = gzipSizeSync(fileContents);
                     var previousSize = sizes[removeFileNameHash(root, asset.name)];
                     var difference = getDifferenceLabel(size, previousSize);
                     return {
@@ -41,8 +41,7 @@ function printFileSizesAfterBuild(
                         ),
                         name: path.basename(asset.name),
                         size: size,
-                        sizeLabel:
-                            filesize(size) + (difference ? ' (' + difference + ')' : ''),
+                        sizeLabel: filesize(size) + (difference ? ' (' + difference + ')' : ''),
                     };
                 })
         )
@@ -129,7 +128,7 @@ function measureFileSizesBeforeBuild(buildFolder) {
                 sizes = fileNames.filter(canReadAsset).reduce((memo, fileName) => {
                     var contents = fs.readFileSync(fileName);
                     var key = removeFileNameHash(buildFolder, fileName);
-                    memo[key] = sync(contents);
+                    memo[key] = gzipSizeSync(contents);
                     return memo;
                 }, {});
             }

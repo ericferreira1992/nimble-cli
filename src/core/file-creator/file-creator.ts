@@ -6,7 +6,7 @@ import { BaseInstruction } from './base-instruction';
 export class FileCreator {
     private filesInstruction: (FileInstruction | DirectoryInstruction)[] = [];
 
-    private callbackOnCreateFile?: (reponse: { fileInstruction: FileInstruction | DirectoryInstruction, error?: Error }) => void;
+    private callbackOnCreateFile?: (reponse: { fileInstruction: FileInstruction | DirectoryInstruction, error?: any }) => void;
 
     public initialize(filesInstruction: Partial<(FileInstruction | DirectoryInstruction)>[]) {
         this.filesInstruction = this.prepareFilesInstructions(filesInstruction);
@@ -20,8 +20,8 @@ export class FileCreator {
     }
 
     private prepareFilesInstructions(filesInstruction: Partial<BaseInstruction>[], parent?: DirectoryInstruction) {
-        return filesInstruction.map(x => {
-            let instruction = ('content'in x || 'from'in x) ? new FileInstruction(x) : new DirectoryInstruction(x);
+        return filesInstruction.map((x: Partial<BaseInstruction>) => {
+            let instruction = ('content' in x || 'from' in x) ? new FileInstruction(x) : new DirectoryInstruction(x);
             instruction.parent = parent;
             
             if (instruction instanceof DirectoryInstruction)
