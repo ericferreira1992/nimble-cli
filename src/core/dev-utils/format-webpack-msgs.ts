@@ -6,7 +6,7 @@ function isLikelyASyntaxError(message) {
 }
 
 // Cleans up webpack error messages.
-function formatMessage(message) {
+export function formatMessage(message) {
     let lines = !Array.isArray(message) ? [message] : message;
 
     // Strip Webpack-added headers off errors/warnings

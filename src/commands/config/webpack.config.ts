@@ -1,9 +1,9 @@
 import path from 'path';
+import cpx from 'cpx';
 import webpack from 'webpack';
-import chalk from 'chalk';
 // import * as BaseHref from 'base-href-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
+import AfterBuildPlugin from '@fiverr/afterbuild-webpack-plugin';
 import PrerenderSpaPlugin from 'prerender-spa-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
@@ -35,7 +35,6 @@ export async function webpackConfig(env: string, opts: { baseHref?: string, gzip
 		entry: getEntries(),
 		output: {
 			chunkFilename: '[name].bundle.[chunkhash].js',
-			sourceMapFilename: '[name].bundle.[chunkhash].map',
 			filename: '[name].bundle.[chunkhash].js',
 			path: distPath,
 			publicPath: ''
@@ -64,7 +63,7 @@ export async function webpackConfig(env: string, opts: { baseHref?: string, gzip
 				return aliases;
 			})(),
 			fallback: {
-			  util: require.resolve('util/'),
+				util: require.resolve('util/'),
 			}
 		},
 		optimization: {
@@ -136,23 +135,20 @@ async function getPlugins(inBuilding: boolean, env: string) {
 				minifyURLs: true,
 			} : undefined
 		}),
-		// new CopyPlugin({
-		// 	patterns: [
-		// 		{ from: 'public', to: '' }
-		// 	],
-		// 	options: {
-		// 	  concurrency: 100,
-		// 	},
-		// }),
 		new MiniCssExtractPlugin({
-			filename: !inBuilding ? '[name].css' : '[name].bundle.[hash].css',
-			chunkFilename: !inBuilding ? '[id].css' : '[id].bundle.[hash].css'
+			filename: !inBuilding ? '[name].css' : '[name].bundle.[fullhash].css',
+			chunkFilename: !inBuilding ? '[id].css' : '[id].bundle.[fullhash].css'
 		}),
 		new webpack.DefinePlugin({
 			'process.env': JSON.stringify(await loadEnvFile(env, inBuilding))
 		}),
 	];
 
+	if (inBuilding) {
+		plugins.push(new AfterBuildPlugin(() => {
+			cpx.copySync('./public/**/*.!(html)', './build');
+		}));
+	}
 	if (inBuilding && options.gziped) {
 		plugins.push(new CompressionPlugin({
 			test: /\.js(\?.*)?$/i,
@@ -166,34 +162,34 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		}));
 	}
 
-	let preRender = configuration['pre-render'];
-	let preRenderRoutes = preRender?.routes ?? [];
-	let preRenderEnabled = preRender?.enabled ?? false;
-	let willUsePreRender = inBuilding && preRenderEnabled && preRenderRoutes.length > 0;
-	if (willUsePreRender) {
-		let routes = (preRender.routes as string[]).map(x => !x.startsWith('/') ? `/${x}` : x);
-		plugins.push(new PrerenderSpaPlugin({
-			staticDir: distPath,
-			routes: routes,
-			renderer: new Renderer({
-				renderAfterDocumentEvent: 'render-event',
-				injectProperty: 'pre-rendering',
-				inject: 'true',
-				headless: true
-			}),
-			postProcess: (renderedRoute: any) => {
-				renderedRoute.route = renderedRoute.originalRoute;
-				renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
-				renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
+	// let preRender = configuration['pre-render'];
+	// let preRenderRoutes = preRender?.routes ?? [];
+	// let preRenderEnabled = preRender?.enabled ?? false;
+	// let willUsePreRender = inBuilding && preRenderEnabled && preRenderRoutes.length > 0;
+	// if (willUsePreRender) {
+	// 	let routes = (preRender.routes as string[]).map(x => !x.startsWith('/') ? `/${x}` : x);
+	// 	plugins.push(new PrerenderSpaPlugin({
+	// 		staticDir: distPath,
+	// 		routes: routes,
+	// 		renderer: new Renderer({
+	// 			renderAfterDocumentEvent: 'render-event',
+	// 			injectProperty: 'pre-rendering',
+	// 			inject: 'true',
+	// 			headless: true
+	// 		}),
+	// 		postProcess: (renderedRoute: any) => {
+	// 			renderedRoute.route = renderedRoute.originalRoute;
+	// 			renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
+	// 			renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
 
-				if (willUseBaseHref) {
-					renderedRoute.html = renderedRoute.html.replace('<base href="/">', `<base href="${baseHref}">`);
-				}
+	// 			if (willUseBaseHref) {
+	// 				renderedRoute.html = renderedRoute.html.replace('<base href="/">', `<base href="${baseHref}">`);
+	// 			}
 
-				return renderedRoute;
-			}
-		}));
-	}
+	// 			return renderedRoute;
+	// 		}
+	// 	}));
+	// }
 
 	// if (!willUsePreRender && willUseBaseHref) {
 	// 	if ('baseHref' in options && !inBuilding) {
@@ -220,7 +216,7 @@ function getRules(inBuilding: boolean) {
 			loader: 'ts-loader'
 		},
 		{
-			test: /\.s[ac]ss$/i,
+			test: /\.(sass|css|scss)$/i,
 			use: [
 				!inBuilding ? 'style-loader' : MiniCssExtractPlugin.loader,
 				{
