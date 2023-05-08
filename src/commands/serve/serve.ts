@@ -7,8 +7,8 @@ import { Logger } from '../../utils/logger.util';
 import { ArgsResolver } from '../../core/args-resolver';
 import { webpackConfig } from '../config/webpack.config';
 import { PATHS } from '../../core/dev-utils/paths';
-import { webpackDevServerUtils } from '../../core/dev-utils/webpack-dev-server-utils';
 import { CLI } from '../../cli';
+import { prepareUrls, createCompiler } from '../../core/dev-utils/webpack-dev-server-utils';
 
 @injectable()
 export class Serve {
@@ -43,7 +43,7 @@ export class Serve {
         const config = await webpackConfig(this.env, options);
         const protocol = this.args.has('https') ? 'https' : 'http';
         const appName = require(PATHS.appPackageJson).name;
-        const urls = webpackDevServerUtils.prepareUrls(protocol, this.host, this.port);
+        const urls = prepareUrls(protocol, this.host, this.port);
 
         // const devSocket = {
         //     warnings: (warnings) => devServer.sockWrite(devServer.sockets, 'warnings', warnings),
@@ -51,10 +51,12 @@ export class Serve {
         // };
 
         // Create a webpack compiler that is configured with custom messages.
-        const compiler = webpackDevServerUtils.createCompiler({
+        const compiler = createCompiler({
             appName,
             config,
             urls,
+            useYarn: false,
+            useTypeScript: true,
             webpack
         });
 
@@ -62,13 +64,17 @@ export class Serve {
 
         });
 
-        const devServer = new WebpackDevServer(compiler, {
-            host: this.host,
-            port: this.port,
-            historyApiFallback: true,
-        });
+        const devServer = new WebpackDevServer(
+            {
+                host: this.host,
+                port: this.port,
+                historyApiFallback: true,
+            },
+            compiler
+        );
 
-        devServer.listen(this.port, this.host, err => {
+        // devServer.listen(this.port, this.host, err => {
+        devServer.startCallback(err => {
             if (err) {
                 return console.log(err);
             }

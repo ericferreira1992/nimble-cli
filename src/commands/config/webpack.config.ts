@@ -35,6 +35,7 @@ export async function webpackConfig(env: string, opts: { baseHref?: string, gzip
 		entry: getEntries(),
 		output: {
 			chunkFilename: '[name].bundle.[chunkhash].js',
+			sourceMapFilename: '[name].bundle.[chunkhash].map',
 			filename: '[name].bundle.[chunkhash].js',
 			path: distPath,
 			publicPath: ''
@@ -62,6 +63,9 @@ export async function webpackConfig(env: string, opts: { baseHref?: string, gzip
 
 				return aliases;
 			})(),
+			fallback: {
+			  util: require.resolve('util/'),
+			}
 		},
 		optimization: {
 			splitChunks: {
@@ -118,6 +122,7 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		new HtmlWebpackPlugin({
 			template: process.cwd() + '/public/index.html',
 			filename: 'index.html',
+			inject: 'body',
 			minify: inBuilding ? {
 				removeComments: true,
 				collapseWhitespace: true,
@@ -131,11 +136,14 @@ async function getPlugins(inBuilding: boolean, env: string) {
 				minifyURLs: true,
 			} : undefined
 		}),
-		new CopyPlugin({
-			patterns: [
-				{ from: 'public', to: '' }
-			]
-		}),
+		// new CopyPlugin({
+		// 	patterns: [
+		// 		{ from: 'public', to: '' }
+		// 	],
+		// 	options: {
+		// 	  concurrency: 100,
+		// 	},
+		// }),
 		new MiniCssExtractPlugin({
 			filename: !inBuilding ? '[name].css' : '[name].bundle.[hash].css',
 			chunkFilename: !inBuilding ? '[id].css' : '[id].bundle.[hash].css'
@@ -212,9 +220,8 @@ function getRules(inBuilding: boolean) {
 			loader: 'ts-loader'
 		},
 		{
-			test: /\.(sc|sa|c)ss$/,
-			exclude: /\.module.(s(a|c)ss)$/,
-			loader: [
+			test: /\.s[ac]ss$/i,
+			use: [
 				!inBuilding ? 'style-loader' : MiniCssExtractPlugin.loader,
 				{
 					loader: 'css-loader',
@@ -226,7 +233,7 @@ function getRules(inBuilding: boolean) {
 					loader: 'sass-loader',
 					options: {
 						sourceMap: !inBuilding,
-						minimize: inBuilding
+						// minimize: inBuilding
 					}
 				}
 			]
@@ -235,8 +242,9 @@ function getRules(inBuilding: boolean) {
 			test: /\.html$/,
 			loader: 'html-loader',
 			options: {
-				interpolate: true,
-				attrs: [],
+				// interpolate: true,
+				// attrs: [],
+				sources: false,
 				minimize: inBuilding
 			},
 		},
