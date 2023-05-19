@@ -4,10 +4,11 @@ import webpack from 'webpack';
 // import * as BaseHref from 'base-href-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import AfterBuildPlugin from '@fiverr/afterbuild-webpack-plugin';
-import PrerenderSpaPlugin from 'prerender-spa-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
+import { SsgGeneratorPlugin } from './webpack-plugins/ssg-generator-plugin';
+import PuppeteerRenderer from '@prerenderer/renderer-puppeteer';
 
 let configuration: {
 	'pre-render': {
@@ -21,7 +22,6 @@ let configuration: {
 try { configuration = require(process.cwd() + '/nimble.json'); }
 catch { configuration = {} as any; }
 
-const Renderer = PrerenderSpaPlugin.PuppeteerRenderer;
 // const BaseHrefWebpackPlugin = BaseHref.BaseHrefWebpackPlugin;
 
 const distPath = path.resolve(process.cwd(), 'build');
@@ -162,34 +162,36 @@ async function getPlugins(inBuilding: boolean, env: string) {
 		}));
 	}
 
-	// let preRender = configuration['pre-render'];
-	// let preRenderRoutes = preRender?.routes ?? [];
-	// let preRenderEnabled = preRender?.enabled ?? false;
-	// let willUsePreRender = inBuilding && preRenderEnabled && preRenderRoutes.length > 0;
-	// if (willUsePreRender) {
-	// 	let routes = (preRender.routes as string[]).map(x => !x.startsWith('/') ? `/${x}` : x);
-	// 	plugins.push(new PrerenderSpaPlugin({
-	// 		staticDir: distPath,
-	// 		routes: routes,
-	// 		renderer: new Renderer({
-	// 			renderAfterDocumentEvent: 'render-event',
-	// 			injectProperty: 'pre-rendering',
-	// 			inject: 'true',
-	// 			headless: true
-	// 		}),
-	// 		postProcess: (renderedRoute: any) => {
-	// 			renderedRoute.route = renderedRoute.originalRoute;
-	// 			renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
-	// 			renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
 
-	// 			if (willUseBaseHref) {
-	// 				renderedRoute.html = renderedRoute.html.replace('<base href="/">', `<base href="${baseHref}">`);
-	// 			}
 
-	// 			return renderedRoute;
-	// 		}
-	// 	}));
-	// }
+	let preRender = configuration['pre-render'];
+	let preRenderRoutes = preRender?.routes ?? [];
+	let preRenderEnabled = preRender?.enabled ?? false;
+	let willUsePreRender = inBuilding && preRenderEnabled && preRenderRoutes.length > 0;
+	if (willUsePreRender) {
+		let routes = (preRender.routes as string[]).map(x => !x.startsWith('/') ? `/${x}` : x);
+		plugins.push(new SsgGeneratorPlugin({
+			staticDir: distPath,
+			routes: routes,
+			renderer: new PuppeteerRenderer({
+				renderAfterDocumentEvent: 'render-event',
+				injectProperty: 'pre-rendering',
+				inject: 'true',
+				headless: true
+			}),
+			postProcess: (renderedRoute: any) => {
+				renderedRoute.route = renderedRoute.originalRoute;
+				renderedRoute.html = renderedRoute.html.replace('<nimble-root', '<nimble-root style="visibility: hidden;"');
+				renderedRoute.html = renderedRoute.html.replace(/<style type="text\/css">(.|\n)*?<\/style>/g, '');
+
+				if (willUseBaseHref) {
+					renderedRoute.html = renderedRoute.html.replace('<base href="/">', `<base href="${baseHref}">`);
+				}
+
+				return renderedRoute;
+			}
+		}));
+	}
 
 	// if (!willUsePreRender && willUseBaseHref) {
 	// 	if ('baseHref' in options && !inBuilding) {
