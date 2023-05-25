@@ -51,7 +51,14 @@ export class Build {
                     console.log();
                 },
                 err => {
-                    console.error(err);
+                    if (Array.isArray(err)) {
+                        err.forEach((e) => {
+                            console.error(e);
+                        });
+                    }
+                    else {
+                        console.error(err);
+                    }
                     console.log('');
 
                     const tscCompileOnError = process.env.TSC_COMPILE_ON_ERROR === 'true';
@@ -111,7 +118,7 @@ export class Build {
                     );
                 }
                 if (messages.errors.length) {
-                    return reject(new Error(messages.errors.join('\n\n')));
+                    return reject(messages.errors);
                 }
 
                 return resolve({ stats, warnings: messages.warnings });
