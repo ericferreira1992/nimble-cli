@@ -7,6 +7,7 @@ export const INDEX_HTML = ''+
         <title>[[ProjectFriendlyName]]</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
 		<link rel="manifest" href="manifest.json">
+		<base href="/">
     </head>
     <body>
         <nimble-root></nimble-root>
